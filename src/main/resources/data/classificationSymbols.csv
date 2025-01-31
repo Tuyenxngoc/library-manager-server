@@ -1,0 +1,101 @@
+name;code;level
+Ngôn ngữ;400;1
+Khoa học tự nhiên và Toán học;500;1
+Thư mục học;010;2
+Thư viện và Thông tin học;020;2
+Bách khoa toàn thư;030;2
+[chưa sử dụng];040;2
+Ấn phẩm định kỳ tổng quát;050;2
+Các tổ chức tổng quát và bảo tàng học;060;2
+Truyền thông học, báo chí học và xuất bản;070;2
+Sưu tập tổng quát;080;2
+Bản thảo viết tay và sách hiếm;090;2
+Siêu hình học;110;2
+Nhận thức luận, thuyết nhân quả, nhân loại học;120;2
+Cận tâm lý và thuyết huyền bí [hay Hiện tượng siêu nhiên];130;2
+Những trường phái triết học cụ thể;140;2
+Tâm lý học;150;2
+Luận lý học (hay Lôgic học);160;2
+Đạo đức học (Triết học về luân lý);170;2
+Triết học Cổ đại, Trung cổ, Triết học Đông phương;180;2
+Triết học Tây phương hiện đại;190;2
+Triết lý và học thuyết về tôn giáo;210;2
+Thánh kinh;220;2
+Kitô giáo Thần học Kitô giáo;230;2
+Luân lý Kitô giáo và thần học về lòng sùng kính;240;2
+Các dòng tu Kitô giáo và giáo hội địa phương;250;2
+Thần học liên quan đến xã hội và giáo hội;260;2
+Lịch sử Kitô giáo và giáo hội Kitô giáo;270;2
+Các giáo phái Kitô giáo và các hệ phái [hay tôn phái];280;2
+Tôn giáo đối chiếu và những tôn giáo khác;290;2
+Sưu tập các thống kê tổng quát;310;2
+Khoa học chính trị;320;2
+Kinh tế học;330;2
+Luật học;340;2
+Hành chính công quyền và khoa học quân sự;350;2
+Những vấn đề xã hội và những cơ quan cứu tế xã hội; những đoàn thể xã hội;360;2
+Tổ chức và xây dựng nền giáo dục;370;2
+Lí luận văn hóa;380;2
+Lí luận của công tác văn hóa quần chúng;390;2
+Ngôn ngữ học;410;2
+Anh ngữ và Anh ngữ cổ;420;2
+Những ngôn ngữ gốc Đức Đức ngữ;430;2
+Ngôn ngữ gốc La Tinh Pháp ngữ;440;2
+Ngôn ngữ Ý, La Mã ngữ, Ngôn ngữ Rhaetia [Rhaeto­Romanic];450;2
+Ngôn ngữ Tây Ban Nha và Bồ Đào Nha;460;2
+Những ngôn ngữ gốc Ý Ngôn ngữ La­tinh;470;2
+Những ngôn ngữ gốc Hy Lạp Ngôn ngữ Hy Lạp cổ;480;2
+Những ngôn ngữ khác;490;2
+Toán học;510;2
+Thiên văn học và những khoa học liên kết;520;2
+Vật lý học;530;2
+Hóa học và những khoa liên hệ;540;2
+Những khoa học về địa cầu;550;2
+Cổ sinh vật học Cổ động vật học;560;2
+Những khoa sinh học Sinh vật học;570;2
+Thực vật học;580;2
+Động vật học;590;2
+Những khoa về y học Y khoa;610;2
+Khoa công trình và những hoạt động liên kết;620;2
+Nông nghiệp và những công nghệ liên quan;630;2
+Kinh tế gia đình và đời sống gia đình;640;2
+Quản trị học và những dịch vụ phụ thuộc;650;2
+Khoa công trình về hóa học;660;2
+Công nghiệp chế tạo;670;2
+Sản phẩm đặc chế để dùng vào mục đích chuyên dụng;680;2
+Ngành xây dựng;690;2
+Nghệ thuật thiết kế đô thị và nghệ thuật tạo phong cảnh;710;2
+Khoa kiến trúc;720;2
+Nghệ thuật tạo hình và nghệ thuật điêu khắc;730;2
+Thuật họa hình và nghệ thuật trang trí;740;2
+Hội họa và tranh;750;2
+Nghệ thuật đồ họa Làm bản in và các bản in tranh ảnh;760;2
+Nghệ thuật nhiếp ảnh và hình ảnh;770;2
+Âm nhạc;780;2
+Giải trí và Nghệ thuật trình diễn;790;2
+Văn học Mỹ bằng tiếng Anh;810;2
+Văn học Anh và văn học Anh cổ điển;820;2
+Văn học thuộc những ngôn ngữ gốc Đức;830;2
+Văn học thuộc những ngôn ngữ gốc La­tinh;840;2
+Văn học thuộc những ngôn ngữ gốc Ý, La Mã và Rhaetia [Rhaeto­Romanic];850;2
+Văn học thuộc những ngôn ngữ Tây Ban Nha, Bồ Đào Nha;860;2
+Văn học thuộc Ý ngữ Văn học La­tinh;870;2
+Văn học thuộc Hy Lạp ngữ Văn học cổ Hy Lạp;880;2
+Văn học của những ngôn ngữ khác;890;2
+Địa lý và du lịch;910;2
+Tiểu sử, phổ hệ, phù hiệu;920;2
+Lịch sử thế giới thời cổ đến khoảng năm 499;930;2
+Lịch sử tổng quát của Âu châu;940;2
+Lịch sử tổng quát của Á châu Viễn Đông;950;2
+Lịch sử tổng quát của Phi châu;960;2
+Lịch sử tổng quát của Bắc Mỹ châu;970;2
+Lịch sử tổng quát của Nam Mỹ châu;980;2
+Lịch sử tổng quát của những vùng khác;990;2
+Tri thức;001;3
+Sách;002;3
+Các hệ thống;003;3
+Xử lý dữ liệu và tin học;004;3
+Lập trình điện toán, thảo chương điện toán, các dữ liệu;005;3
+Các phương pháp tin học cụ thể;006;3
+[chưa sử dụng];007;3
+[chưa sử dụng];008;3

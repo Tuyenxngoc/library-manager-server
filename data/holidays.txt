@@ -1,0 +1,11 @@
+0,Nghỉ Tết Dương Lịch,2024-12-30,2025-01-02,true
+1,Nghỉ Tết Âm Lịch,2025-01-21,2025-02-03,true
+2,Ngày Giỗ Tổ Hùng Vương,2025-04-06,2025-04-06,false
+3,Ngày Chiến thắng,2025-04-30,2025-04-30,false
+4,Ngày Quốc tế Lao động,2025-05-01,2025-05-01,false
+5,Ngày Quốc khánh,2025-09-02,2025-09-02,false
+6,Ngày Tết Trung Thu,2025-09-13,2025-09-13,false
+7,Ngày Nhà giáo Việt Nam,2025-11-20,2025-11-20,false
+8,Ngày Thành lập Quân đội Nhân dân Việt Nam,2025-12-22,2025-12-22,false
+9,Ngày Lễ Giáng Sinh,2025-12-25,2025-12-25,false
+10,Ngày Quốc tế Phụ nữ,2025-03-08,2025-03-08,false

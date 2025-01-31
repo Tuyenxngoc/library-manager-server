@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhắc nhở trả sách</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #28a745;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .footer {
+            background-color: #28a745;
+            color: #ffffff;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+        }
+
+        b {
+            color: red;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 10px;
+            }
+
+            .content {
+                padding: 10px;
+            }
+
+            .footer {
+                padding: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Nhắc nhở trả sách</h2>
+    </div>
+    <div class="content">
+        <p>Xin chào, <b th:text="${username}"></b>,</p>
+        <p>Chúng tôi muốn nhắc bạn rằng phiếu mượn <b th:text="${receiptNumber}"></b> mà bạn đã mượn có ngày trả là
+            <b th:text="${returnDate}"></b>.</p>
+        <p>Vui lòng đảm bảo trả sách đúng hạn để tránh bất kỳ khoản phạt nào.</p>
+        <p>Nếu bạn cần gia hạn thời gian mượn sách hoặc có câu hỏi, vui lòng liên hệ với chúng tôi.</p>
+        <p>Cám ơn bạn đã sử dụng dịch vụ thư viện của chúng tôi!</p>
+    </div>
+    <div class="footer">
+        &copy; 2023 Thư viện. Mọi quyền được bảo lưu.
+    </div>
+</div>
+</body>
+
+</html>
