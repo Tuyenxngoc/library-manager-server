@@ -7,6 +7,7 @@ import com.example.librarymanager.domain.dto.response.borrowreceipt.BorrowReques
 import com.example.librarymanager.domain.dto.response.cart.CartDetailResponseDto;
 
 import java.util.List;
+import java.util.Set;
 
 public interface CartService {
 
@@ -14,7 +15,7 @@ public interface CartService {
 
     CommonResponseDto addToCart(String cardNumber, Long bookId);
 
-    CommonResponseDto removeFromCart(String cardNumber, Long cartDetailId);
+    CommonResponseDto removeFromCart(String cardNumber, Set<Long> cartDetailIds);
 
     CommonResponseDto clearCart(String cardNumber);
 

@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Set;
+
 @RestApiV1
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -54,10 +56,10 @@ public class CartController {
     @PreAuthorize("hasRole('ROLE_READER')")
     @DeleteMapping(UrlConstant.Cart.REMOVE)
     public ResponseEntity<?> removeFromCart(
-            @RequestParam Long cartDetailId,//todo update to list
+            @RequestParam Set<Long> cartDetailIds,
             @CurrentUser CustomUserDetails userDetails
     ) {
-        return VsResponseUtil.success(cartService.removeFromCart(userDetails.getCardNumber(), cartDetailId));
+        return VsResponseUtil.success(cartService.removeFromCart(userDetails.getCardNumber(), cartDetailIds));
     }
 
     @Operation(summary = "API Clear Cart")

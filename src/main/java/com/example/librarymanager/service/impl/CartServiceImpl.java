@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -147,11 +148,12 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CommonResponseDto removeFromCart(String cardNumber, Long cartDetailId) {
+    public CommonResponseDto removeFromCart(String cardNumber, Set<Long> cartDetailIds) {
         Cart cart = getEntity(cardNumber);
 
-        // Tìm chi tiết giỏ hàng và xóa
-        cart.getCartDetails().removeIf(detail -> detail.getId().equals(cartDetailId));
+        // Tìm và xóa các chi tiết giỏ hàng có id nằm trong tập cartDetailIds
+        cart.getCartDetails().removeIf(detail -> cartDetailIds.contains(detail.getId()));
+
         cartRepository.save(cart);
 
         String message = messageSource.getMessage(SuccessMessage.DELETE, null, LocaleContextHolder.getLocale());
