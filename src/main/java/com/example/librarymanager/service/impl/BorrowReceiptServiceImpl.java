@@ -16,7 +16,6 @@ import com.example.librarymanager.domain.mapper.BorrowReceiptMapper;
 import com.example.librarymanager.domain.specification.EntitySpecification;
 import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.ConflictException;
-import com.example.librarymanager.exception.ForbiddenException;
 import com.example.librarymanager.exception.NotFoundException;
 import com.example.librarymanager.repository.*;
 import com.example.librarymanager.service.BorrowReceiptService;
@@ -76,14 +75,7 @@ public class BorrowReceiptServiceImpl implements BorrowReceiptService {
     private void getReader(BorrowReceipt borrowReceipt, BorrowReceiptRequestDto requestDto) {
         Reader reader = readerRepository.findById(requestDto.getReaderId())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.Reader.ERR_NOT_FOUND_ID, requestDto.getReaderId()));
-        switch (reader.getStatus()) {
-            case INACTIVE -> throw new ForbiddenException(ErrorMessage.Reader.ERR_READER_INACTIVE);
-            case SUSPENDED -> throw new ForbiddenException(ErrorMessage.Reader.ERR_READER_SUSPENDED);
-            case REVOKED -> throw new ForbiddenException(ErrorMessage.Reader.ERR_READER_REVOKED);
-        }
-        if (reader.getExpiryDate().isBefore(LocalDate.now())) {
-            throw new ForbiddenException(ErrorMessage.Reader.ERR_READER_EXPIRED);
-        }
+        ReaderServiceImpl.validateReaderStatus(reader);
 
         borrowReceipt.setReader(reader);
     }

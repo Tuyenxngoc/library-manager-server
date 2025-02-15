@@ -13,7 +13,6 @@ import com.example.librarymanager.domain.dto.response.LibraryVisitResponseDto;
 import com.example.librarymanager.domain.entity.LibraryVisit;
 import com.example.librarymanager.domain.entity.Reader;
 import com.example.librarymanager.domain.specification.EntitySpecification;
-import com.example.librarymanager.exception.ForbiddenException;
 import com.example.librarymanager.exception.NotFoundException;
 import com.example.librarymanager.repository.LibraryVisitRepository;
 import com.example.librarymanager.repository.ReaderRepository;
@@ -46,14 +45,7 @@ public class LibraryVisitServiceImpl implements LibraryVisitService {
         // Lấy ra bạn đọc
         Reader reader = readerRepository.findByCardNumber(requestDto.getCardNumber())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.Reader.ERR_NOT_FOUND_CARD_NUMBER, requestDto.getCardNumber()));
-        switch (reader.getStatus()) {//todo
-            case INACTIVE -> throw new ForbiddenException(ErrorMessage.Reader.ERR_READER_INACTIVE);
-            case SUSPENDED -> throw new ForbiddenException(ErrorMessage.Reader.ERR_READER_SUSPENDED);
-            case REVOKED -> throw new ForbiddenException(ErrorMessage.Reader.ERR_READER_REVOKED);
-        }
-        if (reader.getExpiryDate().isBefore(LocalDate.now())) {
-            throw new ForbiddenException(ErrorMessage.Reader.ERR_READER_EXPIRED);
-        }
+        ReaderServiceImpl.validateReaderStatus(reader);
 
         // Lấy ra thời gian bắt đầu và kết thúc của ngày hôm nay
         LocalDate today = LocalDate.now();

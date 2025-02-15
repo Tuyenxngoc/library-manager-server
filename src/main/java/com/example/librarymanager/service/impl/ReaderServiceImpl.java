@@ -14,6 +14,7 @@ import com.example.librarymanager.domain.mapper.ReaderMappper;
 import com.example.librarymanager.domain.specification.EntitySpecification;
 import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.ConflictException;
+import com.example.librarymanager.exception.ForbiddenException;
 import com.example.librarymanager.exception.NotFoundException;
 import com.example.librarymanager.repository.ReaderRepository;
 import com.example.librarymanager.service.LogService;
@@ -58,6 +59,17 @@ public class ReaderServiceImpl implements ReaderService {
     private final MessageSource messageSource;
 
     private final PdfService pdfService;
+
+    public static void validateReaderStatus(Reader reader) {
+        switch (reader.getStatus()) {
+            case INACTIVE -> throw new ForbiddenException(ErrorMessage.Reader.ERR_READER_INACTIVE);
+            case SUSPENDED -> throw new ForbiddenException(ErrorMessage.Reader.ERR_READER_SUSPENDED);
+            case REVOKED -> throw new ForbiddenException(ErrorMessage.Reader.ERR_READER_REVOKED);
+        }
+        if (reader.getExpiryDate().isBefore(LocalDate.now())) {
+            throw new ForbiddenException(ErrorMessage.Reader.ERR_READER_EXPIRED);
+        }
+    }
 
     private Reader getEntity(Long id) {
         return readerRepository.findById(id)
