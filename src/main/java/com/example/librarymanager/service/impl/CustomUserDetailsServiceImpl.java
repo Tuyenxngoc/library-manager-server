@@ -7,21 +7,19 @@ import com.example.librarymanager.repository.ReaderRepository;
 import com.example.librarymanager.repository.UserRepository;
 import com.example.librarymanager.security.UserDetailsFactory;
 import com.example.librarymanager.service.CustomUserDetailsService;
-import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class CustomUserDetailsServiceImpl implements UserDetailsService, CustomUserDetailsService {
+public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
 
     UserRepository userRepository;
 
@@ -30,7 +28,6 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService, CustomU
     MessageSource messageSource;
 
     @Override
-    @Transactional
     public UserDetails loadUserByUsername(String usernameOrCardNumber) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(usernameOrCardNumber).orElse(null);
         if (user != null) {
@@ -44,7 +41,6 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService, CustomU
     }
 
     @Override
-    @Transactional
     public UserDetails loadUserByUserId(String userId) throws UsernameNotFoundException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException(messageSource.getMessage(ErrorMessage.User.ERR_NOT_FOUND_ID, new String[]{userId}, LocaleContextHolder.getLocale())));

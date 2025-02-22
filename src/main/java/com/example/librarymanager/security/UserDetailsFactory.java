@@ -6,7 +6,7 @@ import com.example.librarymanager.domain.entity.User;
 public class UserDetailsFactory {
 
     public static CustomUserDetails fromUser(User user) {
-        return new CustomUserDetailsBuilder()
+        return CustomUserDetails.builder()
                 .userId(user.getId())
                 .username(user.getUsername())
                 .password(user.getPassword())
@@ -17,7 +17,7 @@ public class UserDetailsFactory {
     }
 
     public static CustomUserDetails fromReader(Reader reader) {
-        return new CustomUserDetailsBuilder()
+        return CustomUserDetails.builder()
                 .cardNumber(reader.getCardNumber())
                 .username(reader.getFullName())
                 .password(reader.getPassword())

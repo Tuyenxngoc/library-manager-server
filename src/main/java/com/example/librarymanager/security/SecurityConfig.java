@@ -1,7 +1,7 @@
 package com.example.librarymanager.security;
 
-import com.example.librarymanager.security.jwt.JwtAuthenticationEntryPoint;
 import com.example.librarymanager.security.jwt.JwtAuthenticationFilter;
+import com.example.librarymanager.service.CustomUserDetailsService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,9 +18,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -54,22 +54,43 @@ public class SecurityConfig {
             "/files/**",
     };
 
-    UserDetailsService userDetailsService;
+    private static final String[] GET_WHITELIST_URL = {
+            "api/v1/news-articles",
+            "api/v1/news-articles/*",
+            "api/v1/book-definitions/books",
+            "api/v1/book-definitions/books/*",
+            "api/v1/stats/library",
+            "api/v1/system-settings/library-rules",
+            "api/v1/system-settings/library-info",
+            "api/v1/system-settings/holidays",
+            "api/v1/system-settings/holidays/*",
+            "api/v1/system-settings/slides",
+            "api/v1/system-settings/slides/*"
+    };
+
+    private static final String[] POST_WHITELIST_URL = {
+            "api/v1/book-definitions/search",
+            "api/v1/book-definitions/advanced-search"
+    };
+
+    CustomUserDetailsService userDetailsService;
 
     JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    AuthenticationEntryPoint authenticationEntryPoint;
+
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
@@ -77,41 +98,26 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(registry -> registry
                         .requestMatchers(WHITE_LIST_URL).permitAll()
-                        .requestMatchers(HttpMethod.GET,
-                                "api/v1/news-articles", "api/v1/news-articles/*",
-                                "api/v1/book-definitions/books",
-                                "api/v1/book-definitions/books/*",
-                                "api/v1/stats/library",
-                                "api/v1/system-settings/library-rules",
-                                "api/v1/system-settings/library-info",
-                                "api/v1/system-settings/holidays",
-                                "api/v1/system-settings/holidays/*",
-                                "api/v1/system-settings/slides",
-                                "api/v1/system-settings/slides/*"
-                        ).permitAll()
-                        .requestMatchers(HttpMethod.POST,
-                                "api/v1/book-definitions/search",
-                                "api/v1/book-definitions/advanced-search"
-                        ).permitAll()
-                        .anyRequest().authenticated()
-                )
+                        .requestMatchers(HttpMethod.GET, GET_WHITELIST_URL).permitAll()
+                        .requestMatchers(HttpMethod.POST, POST_WHITELIST_URL).permitAll()
+                        .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint));
         return http.build();
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://192.168.1.5:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"));
         configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token", "X-Refresh-Token"));
         configuration.setExposedHeaders(List.of("x-auth-token"));
