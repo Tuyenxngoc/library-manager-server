@@ -164,7 +164,7 @@ public class AuthServiceImpl implements AuthService {
             jwtTokenService.blacklistAccessToken(accessToken);
         }
 
-        if (refreshToken != null) {
+        if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken) && jwtTokenProvider.isRefreshToken(refreshToken)) {
             // Lưu refreshToken vào blacklist
             jwtTokenService.blacklistRefreshToken(refreshToken);
         }
@@ -180,7 +180,7 @@ public class AuthServiceImpl implements AuthService {
     public TokenRefreshResponseDto refresh(TokenRefreshRequestDto request) {
         String refreshToken = request.getRefreshToken();
 
-        if (jwtTokenProvider.validateToken(refreshToken)) {
+        if (jwtTokenProvider.validateToken(refreshToken) && jwtTokenProvider.isRefreshToken(refreshToken)) {
             String userId = jwtTokenProvider.extractSubjectFromJwt(refreshToken);
 
             //Kiểm tra nếu có userId

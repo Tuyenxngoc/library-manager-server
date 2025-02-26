@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String accessToken = JwtUtil.extractTokenFromRequest(request);
 
             //Kiểm tra token hợp lệ
-            if (accessToken != null && tokenProvider.validateToken(accessToken)) {
+            if (accessToken != null && tokenProvider.validateToken(accessToken) && tokenProvider.isAccessToken(accessToken)) {
                 String userId = tokenProvider.extractSubjectFromJwt(accessToken);
                 if (userId != null && tokenService.isTokenAllowed(accessToken)) {
 

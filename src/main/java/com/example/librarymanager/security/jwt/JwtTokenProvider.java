@@ -75,16 +75,53 @@ public class JwtTokenProvider {
         return false;
     }
 
+    private Claims getClaims(String token) {
+        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+    }
+
     public String extractSubjectFromJwt(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getSubject();
+        return getClaims(token).getSubject();
     }
 
     public String extractClaimCardNumber(String token) {
-        Object cardNumber = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().get(CARD_NUMBER_KEY);
-        if (cardNumber != null) {
-            return cardNumber.toString();
+        Object cardNumber = getClaims(token).get(CARD_NUMBER_KEY);
+        return cardNumber != null ? cardNumber.toString() : null;
+    }
+
+    public boolean isRefreshToken(String token) {
+        try {
+            return TYPE_REFRESH.equals(getClaims(token).get(CLAIM_TYPE));
+        } catch (Exception ex) {
+            log.error("Unable to determine token type");
+            return false;
         }
-        return null;
+    }
+
+    public boolean isAccessToken(String token) {
+        try {
+            return TYPE_ACCESS.equals(getClaims(token).get(CLAIM_TYPE));
+        } catch (Exception ex) {
+            log.error("Unable to determine token type");
+            return false;
+        }
+    }
+
+    public long getExpirationTime(String token) {
+        try {
+            return getClaims(token).getExpiration().getTime();
+        } catch (Exception ex) {
+            log.error("Unable to get expiration time from token");
+            return -1;
+        }
+    }
+
+    public long getRemainingTime(String token) {
+        long expirationTime = getExpirationTime(token);
+        if (expirationTime < 0) {
+            return 0;
+        }
+        long remainingTime = expirationTime - System.currentTimeMillis();
+        return Math.max(remainingTime, 0);
     }
 
 }
