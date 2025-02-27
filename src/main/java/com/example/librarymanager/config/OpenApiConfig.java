@@ -14,7 +14,7 @@ public class OpenApiConfig {
     private final String API_KEY = "Bearer Token";
 
     @Bean
-    public OpenAPI customOpenAPI() {
+    OpenAPI customOpenAPI() {
         OpenAPI openAPI = new OpenAPI().info(
                 new Info()
                         .title("Project Library Manager Spring API")

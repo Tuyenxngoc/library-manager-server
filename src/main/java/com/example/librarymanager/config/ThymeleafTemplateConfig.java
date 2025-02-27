@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 public class ThymeleafTemplateConfig {
 
     @Bean
-    public SpringTemplateEngine springTemplateEngine() {
+    SpringTemplateEngine springTemplateEngine() {
         SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
         springTemplateEngine.addTemplateResolver(emailTemplateResolver());
         return springTemplateEngine;

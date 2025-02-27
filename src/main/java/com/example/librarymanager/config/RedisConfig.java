@@ -32,14 +32,14 @@ public class RedisConfig {
     private String password;
 
     @Bean
-    public LettuceConnectionFactory redisConnectionFactory() {
+    LettuceConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(host, port);
         configuration.setPassword(password);
         return new LettuceConnectionFactory(configuration);
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
+    RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
 
@@ -54,7 +54,7 @@ public class RedisConfig {
     }
 
     @Bean
-    public ObjectMapper redisObjectMapper() {
+    ObjectMapper redisObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
 
         SimpleModule module = new SimpleModule();
