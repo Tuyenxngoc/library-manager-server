@@ -21,7 +21,7 @@ import com.example.librarymanager.security.UserDetailsFactory;
 import com.example.librarymanager.security.jwt.JwtTokenProvider;
 import com.example.librarymanager.service.AuthService;
 import com.example.librarymanager.service.EmailRateLimiterService;
-import com.example.librarymanager.service.JwtTokenService;
+import com.example.librarymanager.service.JwtBlacklistService;
 import com.example.librarymanager.util.JwtUtil;
 import com.example.librarymanager.util.RandomPasswordUtil;
 import com.example.librarymanager.util.SendMailUtil;
@@ -60,7 +60,7 @@ public class AuthServiceImpl implements AuthService {
 
     JwtTokenProvider jwtTokenProvider;
 
-    JwtTokenService jwtTokenService;
+    JwtBlacklistService jwtBlacklistService;
 
     EmailRateLimiterService emailRateLimiterService;
 
@@ -161,12 +161,12 @@ public class AuthServiceImpl implements AuthService {
 
         if (accessToken != null) {
             // Lưu accessToken vào blacklist
-            jwtTokenService.blacklistAccessToken(accessToken);
+            jwtBlacklistService.blacklistAccessToken(accessToken);
         }
 
         if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken) && jwtTokenProvider.isRefreshToken(refreshToken)) {
             // Lưu refreshToken vào blacklist
-            jwtTokenService.blacklistRefreshToken(refreshToken);
+            jwtBlacklistService.blacklistRefreshToken(refreshToken);
         }
 
         SecurityContextLogoutHandler logout = new SecurityContextLogoutHandler();
@@ -180,39 +180,38 @@ public class AuthServiceImpl implements AuthService {
     public TokenRefreshResponseDto refresh(TokenRefreshRequestDto request) {
         String refreshToken = request.getRefreshToken();
 
-        if (jwtTokenProvider.validateToken(refreshToken) && jwtTokenProvider.isRefreshToken(refreshToken)) {
-            String userId = jwtTokenProvider.extractSubjectFromJwt(refreshToken);
-
-            //Kiểm tra nếu có userId
-            if (userId != null && jwtTokenService.isTokenAllowed(refreshToken)) {
-                User user = userRepository.findById(userId)
-                        .orElseThrow(() -> new BadRequestException(ErrorMessage.Auth.ERR_INVALID_REFRESH_TOKEN));
-                CustomUserDetails userDetails = UserDetailsFactory.fromUser(user);
-
-                String newAccessToken = jwtTokenProvider.generateToken(userDetails, false);
-                String newRefreshToken = jwtTokenProvider.generateToken(userDetails, true);
-
-                return new TokenRefreshResponseDto(newAccessToken, newRefreshToken);
-            } else {
-
-                //Nếu không kiểm tra cardNumber
-                String cardNumber = jwtTokenProvider.extractClaimCardNumber(refreshToken);
-
-                if (cardNumber != null && jwtTokenService.isTokenAllowed(refreshToken)) {
-                    Reader reader = readerRepository.findByCardNumber(cardNumber)
-                            .orElseThrow(() -> new BadRequestException(ErrorMessage.Auth.ERR_INVALID_REFRESH_TOKEN));
-
-                    CustomUserDetails userDetails = UserDetailsFactory.fromReader(reader);
-
-                    String newAccessToken = jwtTokenProvider.generateToken(userDetails, false);
-                    String newRefreshToken = jwtTokenProvider.generateToken(userDetails, true);
-
-                    return new TokenRefreshResponseDto(newAccessToken, newRefreshToken);
-                }
-            }
+        if (!jwtTokenProvider.validateToken(refreshToken) ||
+                !jwtTokenProvider.isRefreshToken(refreshToken) ||
+                jwtBlacklistService.isTokenBlocked(refreshToken)) {
+            throw new BadRequestException(ErrorMessage.Auth.ERR_INVALID_REFRESH_TOKEN);
         }
 
-        //Trả về lỗi refresh token không hợp lệ
+        String userId = jwtTokenProvider.extractSubjectFromJwt(refreshToken);
+        if (userId != null) {
+            User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException(ErrorMessage.Auth.ERR_INVALID_REFRESH_TOKEN));
+            CustomUserDetails userDetails = UserDetailsFactory.fromUser(user);
+
+            String newAccessToken = jwtTokenProvider.generateToken(userDetails, false);
+            String newRefreshToken = jwtTokenProvider.generateToken(userDetails, true);
+
+            jwtBlacklistService.blacklistRefreshToken(refreshToken);
+
+            return new TokenRefreshResponseDto(newAccessToken, newRefreshToken);
+        }
+
+        String cardNumber = jwtTokenProvider.extractClaimCardNumber(refreshToken);
+        if (cardNumber != null) {
+            Reader reader = readerRepository.findByCardNumber(cardNumber).orElseThrow(() -> new BadRequestException(ErrorMessage.Auth.ERR_INVALID_REFRESH_TOKEN));
+            CustomUserDetails userDetails = UserDetailsFactory.fromReader(reader);
+
+            String newAccessToken = jwtTokenProvider.generateToken(userDetails, false);
+            String newRefreshToken = jwtTokenProvider.generateToken(userDetails, true);
+
+            jwtBlacklistService.blacklistRefreshToken(refreshToken);
+
+            return new TokenRefreshResponseDto(newAccessToken, newRefreshToken);
+        }
+
         throw new BadRequestException(ErrorMessage.Auth.ERR_INVALID_REFRESH_TOKEN);
     }
 
@@ -321,18 +320,18 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private void sendEmail(String to, String subject, Map<String, Object> properties, String templateName) {
-        // Tạo DataMailDto
         DataMailDto mailDto = new DataMailDto();
         mailDto.setTo(to);
         mailDto.setSubject(subject);
         mailDto.setProperties(properties);
 
-        // Gửi email bất đồng bộ
         CompletableFuture.runAsync(() -> {
             try {
                 sendMailUtil.sendEmailWithHTML(mailDto, templateName);
             } catch (MessagingException e) {
-                e.printStackTrace();
+                log.error("Failed to send email to [{}] with subject [{}]. Error: {}", to, subject, e.getMessage(), e);
+            } catch (Exception e) {
+                log.error("Unexpected error while sending email to [{}]. Error: {}", to, e.getMessage(), e);
             }
         });
     }

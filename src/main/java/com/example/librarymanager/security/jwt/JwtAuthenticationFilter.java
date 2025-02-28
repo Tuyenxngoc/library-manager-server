@@ -1,8 +1,9 @@
 package com.example.librarymanager.security.jwt;
 
 import com.example.librarymanager.service.CustomUserDetailsService;
-import com.example.librarymanager.service.JwtTokenService;
+import com.example.librarymanager.service.JwtBlacklistService;
 import com.example.librarymanager.util.JwtUtil;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,44 +32,52 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     JwtTokenProvider tokenProvider;
 
-    JwtTokenService tokenService;
+    JwtBlacklistService tokenService;
+
+    private void setAuthentication(UserDetails userDetails, HttpServletRequest request) {
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String accessToken = JwtUtil.extractTokenFromRequest(request);
+            if (accessToken == null ||
+                    !tokenProvider.validateToken(accessToken) ||
+                    !tokenProvider.isAccessToken(accessToken) ||
+                    tokenService.isTokenBlocked(accessToken)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
-            //Kiểm tra token hợp lệ
-            if (accessToken != null && tokenProvider.validateToken(accessToken) && tokenProvider.isAccessToken(accessToken)) {
-                String userId = tokenProvider.extractSubjectFromJwt(accessToken);
-                if (userId != null && tokenService.isTokenAllowed(accessToken)) {
+            String userId = tokenProvider.extractSubjectFromJwt(accessToken);
+            String cardNumber = (userId == null) ? tokenProvider.extractClaimCardNumber(accessToken) : null;
 
-                    //Nếu có id trong token
-                    UserDetails userDetails = customUserDetailsService.loadUserByUserId(userId);
-                    UsernamePasswordAuthenticationToken authenticationToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                } else {
-
-                    //Nếu không có thì đọc card number
-                    String cardNumber = tokenProvider.extractClaimCardNumber(accessToken);
-                    if (cardNumber != null && tokenService.isTokenAllowed(accessToken)) {
-                        UserDetails userDetails = customUserDetailsService.loadUserByCardNumber(cardNumber);
-                        UsernamePasswordAuthenticationToken authenticationToken =
-                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    }
-                }
+            if (userId != null) {
+                UserDetails userDetails = customUserDetailsService.loadUserByUserId(userId);
+                setAuthentication(userDetails, request);
+            } else if (cardNumber != null) {
+                UserDetails userDetails = customUserDetailsService.loadUserByCardNumber(cardNumber);
+                setAuthentication(userDetails, request);
             }
         } catch (UsernameNotFoundException e) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            response.getWriter().write(e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("User not found: " + e.getMessage());
+            return;
+        } catch (JwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid token: " + e.getMessage());
             return;
         } catch (Exception ex) {
             log.error("Could not set user authentication in security context", ex);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("Internal server error");
+            return;
         }
+
         filterChain.doFilter(request, response);
     }
 

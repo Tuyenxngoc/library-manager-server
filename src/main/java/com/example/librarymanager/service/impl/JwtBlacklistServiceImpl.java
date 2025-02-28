@@ -1,7 +1,7 @@
 package com.example.librarymanager.service.impl;
 
 import com.example.librarymanager.security.jwt.JwtTokenProvider;
-import com.example.librarymanager.service.JwtTokenService;
+import com.example.librarymanager.service.JwtBlacklistService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class JwtTokenServiceImpl implements JwtTokenService {
+public class JwtBlacklistServiceImpl implements JwtBlacklistService {
 
     RedisTemplate<String, Object> redisTemplate;
 
@@ -21,16 +21,16 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
     @Override
     public void blacklistAccessToken(String accessToken) {
-        redisTemplate.opsForValue().set(accessToken, "blacklisted", jwtTokenProvider.getRemainingTime(accessToken), TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(accessToken, 1, jwtTokenProvider.getRemainingTime(accessToken), TimeUnit.MILLISECONDS);
     }
 
     @Override
     public void blacklistRefreshToken(String refreshToken) {
-        redisTemplate.opsForValue().set(refreshToken, "blacklisted", jwtTokenProvider.getRemainingTime(refreshToken), TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(refreshToken, 1, jwtTokenProvider.getRemainingTime(refreshToken), TimeUnit.MILLISECONDS);
     }
 
     @Override
-    public boolean isTokenAllowed(String token) {
-        return Boolean.FALSE.equals(redisTemplate.hasKey(token));
+    public boolean isTokenBlocked(String token) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(token));
     }
 }

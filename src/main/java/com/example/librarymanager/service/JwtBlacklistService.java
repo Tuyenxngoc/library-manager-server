@@ -1,9 +1,9 @@
 package com.example.librarymanager.service;
 
-public interface JwtTokenService {
+public interface JwtBlacklistService {
     void blacklistAccessToken(String accessToken);
 
     void blacklistRefreshToken(String refreshToken);
 
-    boolean isTokenAllowed(String token);
+    boolean isTokenBlocked(String token);
 }
