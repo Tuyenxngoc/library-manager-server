@@ -20,7 +20,7 @@ public class VsResponseUtil {
         RestData<?> response = new RestData<>(data);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.addAll(header);
-        return ResponseEntity.ok().headers(responseHeaders).body(response);
+        return ResponseEntity.status(status).headers(responseHeaders).body(response);
     }
 
     public static ResponseEntity<RestData<?>> error(HttpStatus status, Object message) {

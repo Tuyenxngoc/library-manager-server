@@ -1,16 +1,16 @@
 package com.example.librarymanager.security.jwt;
 
 import com.example.librarymanager.security.CustomUserDetails;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -20,7 +20,6 @@ public class JwtTokenProvider {
     private static final String TYPE_ACCESS = "access";
     private static final String TYPE_REFRESH = "refresh";
     private static final String CARD_NUMBER_KEY = "card-number";
-    private static final String AUTHORITIES_KEY = "auth";
 
     @Value("${jwt.secret:76947ef7-7af1-4745-bfda-ab2d5cb09290}")
     private String SECRET_KEY;
@@ -31,14 +30,11 @@ public class JwtTokenProvider {
     @Value("${jwt.refresh.expiration_time:1440}")
     private int EXPIRATION_TIME_REFRESH_TOKEN;
 
-    public String generateToken(CustomUserDetails userDetails, Boolean isRefreshToken) {
-        String authorities = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+    public String generateToken(CustomUserDetails userDetails, boolean isRefreshToken) {
         Map<String, Object> claim = new HashMap<>();
         claim.put(CLAIM_TYPE, isRefreshToken ? TYPE_REFRESH : TYPE_ACCESS);
         claim.put(CARD_NUMBER_KEY, userDetails.getCardNumber());
-        claim.put(AUTHORITIES_KEY, authorities);
+
         if (isRefreshToken) {
             return Jwts.builder()
                     .setClaims(claim)
@@ -48,6 +44,7 @@ public class JwtTokenProvider {
                     .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                     .compact();
         }
+
         return Jwts.builder()
                 .setClaims(claim)
                 .setSubject(userDetails.getUserId())
@@ -61,16 +58,8 @@ public class JwtTokenProvider {
         try {
             Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
             return true;
-        } catch (SignatureException ex) {
-            log.error("Invalid JWT signature");
-        } catch (MalformedJwtException ex) {
-            log.error("Invalid JWT token");
-        } catch (ExpiredJwtException ex) {
-            log.error("Expired JWT token");
-        } catch (UnsupportedJwtException ex) {
-            log.error("Unsupported JWT token");
-        } catch (IllegalArgumentException ex) {
-            log.error("JWT claims string is empty");
+        } catch (Exception ex) {
+            log.warn("Invalid JWT token: {} - Token: {}", ex.getMessage(), token, ex);
         }
         return false;
     }
@@ -92,7 +81,7 @@ public class JwtTokenProvider {
         try {
             return TYPE_REFRESH.equals(getClaims(token).get(CLAIM_TYPE));
         } catch (Exception ex) {
-            log.error("Unable to determine token type");
+            log.error("Unable to determine token type access");
             return false;
         }
     }
@@ -101,7 +90,7 @@ public class JwtTokenProvider {
         try {
             return TYPE_ACCESS.equals(getClaims(token).get(CLAIM_TYPE));
         } catch (Exception ex) {
-            log.error("Unable to determine token type");
+            log.error("Unable to determine token type refresh");
             return false;
         }
     }

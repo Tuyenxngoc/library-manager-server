@@ -16,7 +16,7 @@ public class RestData<T> {
     private RestStatus status;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private T message;
+    private Object message;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;

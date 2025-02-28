@@ -96,8 +96,8 @@ public class AuthServiceImpl implements AuthService {
                 throw new UnauthorizedException(ErrorMessage.Auth.ERR_ACCOUNT_EXPIRED);
             }
 
-            String accessToken = jwtTokenProvider.generateToken(customUserDetails, Boolean.FALSE);
-            String refreshToken = jwtTokenProvider.generateToken(customUserDetails, Boolean.TRUE);
+            String accessToken = jwtTokenProvider.generateToken(customUserDetails, false);
+            String refreshToken = jwtTokenProvider.generateToken(customUserDetails, true);
 
             return new LoginResponseDto(
                     accessToken,
@@ -134,8 +134,8 @@ public class AuthServiceImpl implements AuthService {
                 throw new UnauthorizedException(ErrorMessage.Auth.ERR_ACCOUNT_EXPIRED);
             }
 
-            String accessToken = jwtTokenProvider.generateToken(customUserDetails, Boolean.FALSE);
-            String refreshToken = jwtTokenProvider.generateToken(customUserDetails, Boolean.TRUE);
+            String accessToken = jwtTokenProvider.generateToken(customUserDetails, false);
+            String refreshToken = jwtTokenProvider.generateToken(customUserDetails, true);
 
             return new LoginResponseDto(
                     accessToken,
@@ -189,8 +189,8 @@ public class AuthServiceImpl implements AuthService {
                         .orElseThrow(() -> new BadRequestException(ErrorMessage.Auth.ERR_INVALID_REFRESH_TOKEN));
                 CustomUserDetails userDetails = UserDetailsFactory.fromUser(user);
 
-                String newAccessToken = jwtTokenProvider.generateToken(userDetails, Boolean.FALSE);
-                String newRefreshToken = jwtTokenProvider.generateToken(userDetails, Boolean.TRUE);
+                String newAccessToken = jwtTokenProvider.generateToken(userDetails, false);
+                String newRefreshToken = jwtTokenProvider.generateToken(userDetails, true);
 
                 return new TokenRefreshResponseDto(newAccessToken, newRefreshToken);
             } else {
@@ -204,8 +204,8 @@ public class AuthServiceImpl implements AuthService {
 
                     CustomUserDetails userDetails = UserDetailsFactory.fromReader(reader);
 
-                    String newAccessToken = jwtTokenProvider.generateToken(userDetails, Boolean.FALSE);
-                    String newRefreshToken = jwtTokenProvider.generateToken(userDetails, Boolean.TRUE);
+                    String newAccessToken = jwtTokenProvider.generateToken(userDetails, false);
+                    String newRefreshToken = jwtTokenProvider.generateToken(userDetails, true);
 
                     return new TokenRefreshResponseDto(newAccessToken, newRefreshToken);
                 }
