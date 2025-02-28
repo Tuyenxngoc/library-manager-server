@@ -1,6 +1,5 @@
 package com.example.librarymanager.service.impl;
 
-import com.example.librarymanager.domain.dto.request.CreateBorrowReceiptRequestDto;
 import com.example.librarymanager.domain.dto.request.CreateReaderCardsRequestDto;
 import com.example.librarymanager.domain.entity.*;
 import com.example.librarymanager.service.PdfService;
@@ -203,7 +202,7 @@ public class PdfServiceImpl implements PdfService {
     }
 
     @Override
-    public byte[] createReceipt(User user, CreateBorrowReceiptRequestDto requestDto, List<BorrowReceipt> borrowReceipts) {
+    public byte[] createReceipt(User user, String schoolName, List<BorrowReceipt> borrowReceipts) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Document document = new Document(PageSize.A4, 10, 10, 10, 10);
 
@@ -230,7 +229,7 @@ public class PdfServiceImpl implements PdfService {
                     receiptContainer.setBorderColor(BaseColor.GRAY);
 
                     //Tiêu đề
-                    Paragraph title = new Paragraph(requestDto.getSchoolName().toUpperCase(), boldFontLarge);
+                    Paragraph title = new Paragraph(schoolName, boldFontLarge);
                     title.setAlignment(Element.ALIGN_CENTER);
                     receiptContainer.addElement(title);
 
@@ -354,7 +353,7 @@ public class PdfServiceImpl implements PdfService {
     }
 
     @Override
-    public byte[] createReceiptWithFourPerPage(CreateBorrowReceiptRequestDto requestDto) {
+    public byte[] createReceiptWithFourPerPage(String schoolName) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Document document = new Document(PageSize.A4, 10, 10, 10, 10);
 
@@ -380,7 +379,7 @@ public class PdfServiceImpl implements PdfService {
                     receiptContainer.setBorderColor(BaseColor.GRAY);
 
                     //Tiêu đề
-                    Paragraph title = new Paragraph(requestDto.getSchoolName().toUpperCase(), boldFontLarge);
+                    Paragraph title = new Paragraph(schoolName.toUpperCase(), boldFontLarge);
                     title.setAlignment(Element.ALIGN_CENTER);
                     receiptContainer.addElement(title);
 

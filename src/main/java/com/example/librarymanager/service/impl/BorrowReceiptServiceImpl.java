@@ -18,10 +18,7 @@ import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.ConflictException;
 import com.example.librarymanager.exception.NotFoundException;
 import com.example.librarymanager.repository.*;
-import com.example.librarymanager.service.BorrowReceiptService;
-import com.example.librarymanager.service.ExcelExportService;
-import com.example.librarymanager.service.LogService;
-import com.example.librarymanager.service.PdfService;
+import com.example.librarymanager.service.*;
 import com.example.librarymanager.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -66,6 +63,8 @@ public class BorrowReceiptServiceImpl implements BorrowReceiptService {
     private final PdfService pdfService;
 
     private final ExcelExportService excelExportService;
+
+    private final SystemSettingService systemSettingService;
 
     private BorrowReceipt getEntity(Long id) {
         return borrowReceiptRepository.findById(id)
@@ -397,19 +396,19 @@ public class BorrowReceiptServiceImpl implements BorrowReceiptService {
 
     @Override
     public byte[] createPdfForReceipts(CreateBorrowReceiptRequestDto requestDto, String userId) {
-        if (requestDto.getBorrowIds().isEmpty()) {
-            return pdfService.createReceiptWithFourPerPage(requestDto);
+        String schoolName = systemSettingService.getLibraryInfo().getSchool();
+        if (requestDto.getBorrowIds() == null || requestDto.getBorrowIds().isEmpty()) {
+            return pdfService.createReceiptWithFourPerPage(schoolName);
         }
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_ID, userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_ID, userId));
 
         List<BorrowReceipt> borrowReceipts = borrowReceiptRepository.findAllByIdIn(requestDto.getBorrowIds());
         if (borrowReceipts.isEmpty()) {
             throw new BadRequestException(ErrorMessage.BorrowReceipt.ERR_NOT_FOUND_ID, requestDto.getBorrowIds());
         }
 
-        return pdfService.createReceipt(user, requestDto, borrowReceipts);
+        return pdfService.createReceipt(user, schoolName, borrowReceipts);
     }
 
     @Override

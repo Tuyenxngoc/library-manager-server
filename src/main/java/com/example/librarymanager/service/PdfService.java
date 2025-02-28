@@ -1,6 +1,5 @@
 package com.example.librarymanager.service;
 
-import com.example.librarymanager.domain.dto.request.CreateBorrowReceiptRequestDto;
 import com.example.librarymanager.domain.dto.request.CreateReaderCardsRequestDto;
 import com.example.librarymanager.domain.entity.Book;
 import com.example.librarymanager.domain.entity.BorrowReceipt;
@@ -12,9 +11,9 @@ import java.util.List;
 public interface PdfService {
     byte[] createReaderCard(CreateReaderCardsRequestDto requestDto, List<Reader> readers);
 
-    byte[] createReceipt(User user, CreateBorrowReceiptRequestDto requestDto, List<BorrowReceipt> borrowReceipts);
+    byte[] createReceipt(User user, String schoolName, List<BorrowReceipt> borrowReceipts);
 
-    byte[] createReceiptWithFourPerPage(CreateBorrowReceiptRequestDto requestDto);
+    byte[] createReceiptWithFourPerPage(String schoolName);
 
     byte[] createPdfFromBooks(List<Book> books);
 
