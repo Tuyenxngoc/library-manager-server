@@ -10,7 +10,7 @@ import com.example.librarymanager.domain.dto.pagination.PagingMeta;
 import com.example.librarymanager.domain.dto.request.ClassificationSymbolRequestDto;
 import com.example.librarymanager.domain.entity.ClassificationSymbol;
 import com.example.librarymanager.domain.mapper.ClassificationSymbolMapper;
-import com.example.librarymanager.domain.specification.EntitySpecification;
+import com.example.librarymanager.domain.specification.ClassificationSymbolSpecification;
 import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.ConflictException;
 import com.example.librarymanager.exception.NotFoundException;
@@ -126,7 +126,7 @@ public class ClassificationSymbolServiceImpl implements ClassificationSymbolServ
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.CLASSIFICATION_SYMBOL);
 
         Page<ClassificationSymbol> page = classificationSymbolRepository.findAll(
-                EntitySpecification.filterClassificationSymbols(requestDto.getKeyword(), requestDto.getSearchBy(), requestDto.getActiveFlag()),
+                ClassificationSymbolSpecification.filterClassificationSymbols(requestDto.getKeyword(), requestDto.getSearchBy(), requestDto.getActiveFlag()),
                 pageable);
 
         PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.CLASSIFICATION_SYMBOL, page);

@@ -10,7 +10,7 @@ import com.example.librarymanager.domain.dto.pagination.PagingMeta;
 import com.example.librarymanager.domain.dto.request.PublisherRequestDto;
 import com.example.librarymanager.domain.entity.Publisher;
 import com.example.librarymanager.domain.mapper.PublisherMapper;
-import com.example.librarymanager.domain.specification.EntitySpecification;
+import com.example.librarymanager.domain.specification.PublisherSpecification;
 import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.ConflictException;
 import com.example.librarymanager.exception.NotFoundException;
@@ -123,7 +123,7 @@ public class PublisherServiceImpl implements PublisherService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.PUBLISHER);
 
         Page<Publisher> page = publisherRepository.findAll(
-                EntitySpecification.filterPublishers(requestDto.getKeyword(), requestDto.getSearchBy(), requestDto.getActiveFlag()),
+                PublisherSpecification.filterPublishers(requestDto.getKeyword(), requestDto.getSearchBy(), requestDto.getActiveFlag()),
                 pageable);
 
         PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.PUBLISHER, page);

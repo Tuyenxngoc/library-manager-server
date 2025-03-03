@@ -12,7 +12,7 @@ import com.example.librarymanager.domain.dto.request.LibraryVisitRequestDto;
 import com.example.librarymanager.domain.dto.response.LibraryVisitResponseDto;
 import com.example.librarymanager.domain.entity.LibraryVisit;
 import com.example.librarymanager.domain.entity.Reader;
-import com.example.librarymanager.domain.specification.EntitySpecification;
+import com.example.librarymanager.domain.specification.LibraryVisitSpecification;
 import com.example.librarymanager.exception.NotFoundException;
 import com.example.librarymanager.repository.LibraryVisitRepository;
 import com.example.librarymanager.repository.ReaderRepository;
@@ -84,7 +84,7 @@ public class LibraryVisitServiceImpl implements LibraryVisitService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.LIBRARY_VISIT);
 
         Page<LibraryVisit> page = libraryVisitRepository.findAll(
-                EntitySpecification.filterLibraryVisits(requestDto.getKeyword(), requestDto.getSearchBy(), filter),
+                LibraryVisitSpecification.filterLibraryVisits(requestDto.getKeyword(), requestDto.getSearchBy(), filter),
                 pageable);
 
         List<LibraryVisitResponseDto> items = page.getContent().stream()

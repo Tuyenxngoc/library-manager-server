@@ -15,7 +15,7 @@ import com.example.librarymanager.domain.entity.Book;
 import com.example.librarymanager.domain.entity.BookDefinition;
 import com.example.librarymanager.domain.entity.ImportReceipt;
 import com.example.librarymanager.domain.mapper.ImportReceiptMapper;
-import com.example.librarymanager.domain.specification.EntitySpecification;
+import com.example.librarymanager.domain.specification.ImportReceiptSpecification;
 import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.ConflictException;
 import com.example.librarymanager.exception.NotFoundException;
@@ -190,7 +190,7 @@ public class ImportReceiptServiceImpl implements ImportReceiptService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.IMPORT_RECEIPT);
 
         Page<ImportReceipt> page = importReceiptRepository.findAll(
-                EntitySpecification.filterImportReceipts(requestDto.getKeyword(), requestDto.getSearchBy()),
+                ImportReceiptSpecification.filterImportReceipts(requestDto.getKeyword(), requestDto.getSearchBy()),
                 pageable);
 
         List<ImportReceiptResponseDto> items = page.getContent().stream()

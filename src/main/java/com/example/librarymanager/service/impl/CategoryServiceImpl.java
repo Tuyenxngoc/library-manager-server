@@ -13,7 +13,7 @@ import com.example.librarymanager.domain.dto.response.category.CategoryResponseD
 import com.example.librarymanager.domain.entity.Category;
 import com.example.librarymanager.domain.entity.CategoryGroup;
 import com.example.librarymanager.domain.mapper.CategoryMapper;
-import com.example.librarymanager.domain.specification.EntitySpecification;
+import com.example.librarymanager.domain.specification.CategorySpecification;
 import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.ConflictException;
 import com.example.librarymanager.exception.NotFoundException;
@@ -161,7 +161,7 @@ public class CategoryServiceImpl implements CategoryService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.CATEGORY);
 
         Page<Category> page = categoryRepository.findAll(
-                EntitySpecification.filterCategories(requestDto.getKeyword(), requestDto.getSearchBy(), requestDto.getActiveFlag()),
+                CategorySpecification.filterCategories(requestDto.getKeyword(), requestDto.getSearchBy(), requestDto.getActiveFlag()),
                 pageable);
 
         List<CategoryResponseDto> items = page.getContent().stream()

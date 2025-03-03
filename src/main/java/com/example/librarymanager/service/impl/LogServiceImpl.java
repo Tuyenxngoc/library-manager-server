@@ -8,7 +8,7 @@ import com.example.librarymanager.domain.dto.pagination.PagingMeta;
 import com.example.librarymanager.domain.dto.response.LogResponseDto;
 import com.example.librarymanager.domain.entity.Log;
 import com.example.librarymanager.domain.entity.User;
-import com.example.librarymanager.domain.specification.EntitySpecification;
+import com.example.librarymanager.domain.specification.LogSpecification;
 import com.example.librarymanager.repository.LogRepository;
 import com.example.librarymanager.service.LogService;
 import com.example.librarymanager.util.PaginationUtil;
@@ -33,7 +33,7 @@ public class LogServiceImpl implements LogService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.LOG);
 
         Page<Log> page = logRepository.findAll(
-                EntitySpecification.filterLogs(requestDto.getKeyword(), requestDto.getSearchBy(), logFilter),
+                LogSpecification.filterLogs(requestDto.getKeyword(), requestDto.getSearchBy(), logFilter),
                 pageable);
 
         List<LogResponseDto> items = page.getContent().stream()

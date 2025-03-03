@@ -11,7 +11,7 @@ import com.example.librarymanager.domain.dto.pagination.PagingMeta;
 import com.example.librarymanager.domain.dto.response.borrowreceipt.BorrowRequestSummaryResponseDto;
 import com.example.librarymanager.domain.dto.response.cart.CartDetailResponseDto;
 import com.example.librarymanager.domain.entity.*;
-import com.example.librarymanager.domain.specification.EntitySpecification;
+import com.example.librarymanager.domain.specification.CartSpecification;
 import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.NotFoundException;
 import com.example.librarymanager.repository.BookDefinitionRepository;
@@ -179,7 +179,7 @@ public class CartServiceImpl implements CartService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.BORROW_REQUEST);
 
         Page<Cart> page = cartRepository.findAll(
-                EntitySpecification.filterCarts(requestDto.getKeyword(), requestDto.getSearchBy()),
+                CartSpecification.filterCarts(requestDto.getKeyword(), requestDto.getSearchBy()),
                 pageable);
 
         LocalDateTime now = LocalDateTime.now();

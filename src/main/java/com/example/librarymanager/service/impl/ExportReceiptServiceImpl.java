@@ -10,7 +10,7 @@ import com.example.librarymanager.domain.dto.response.ExportReceiptResponseDto;
 import com.example.librarymanager.domain.entity.Book;
 import com.example.librarymanager.domain.entity.ExportReceipt;
 import com.example.librarymanager.domain.mapper.ExportReceiptMapper;
-import com.example.librarymanager.domain.specification.EntitySpecification;
+import com.example.librarymanager.domain.specification.ExportReceiptSpecification;
 import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.ConflictException;
 import com.example.librarymanager.exception.NotFoundException;
@@ -181,7 +181,7 @@ public class ExportReceiptServiceImpl implements ExportReceiptService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.EXPORT_RECEIPT);
 
         Page<ExportReceipt> page = exportReceiptRepository.findAll(
-                EntitySpecification.filterExportReceipts(requestDto.getKeyword(), requestDto.getSearchBy()),
+                ExportReceiptSpecification.filterExportReceipts(requestDto.getKeyword(), requestDto.getSearchBy()),
                 pageable);
 
         List<ExportReceiptResponseDto> items = page.getContent().stream()

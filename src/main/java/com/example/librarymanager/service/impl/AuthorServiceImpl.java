@@ -8,7 +8,7 @@ import com.example.librarymanager.domain.dto.pagination.PagingMeta;
 import com.example.librarymanager.domain.dto.request.AuthorRequestDto;
 import com.example.librarymanager.domain.entity.Author;
 import com.example.librarymanager.domain.mapper.AuthorMapper;
-import com.example.librarymanager.domain.specification.EntitySpecification;
+import com.example.librarymanager.domain.specification.AuthorSpecification;
 import com.example.librarymanager.exception.ConflictException;
 import com.example.librarymanager.exception.NotFoundException;
 import com.example.librarymanager.repository.AuthorRepository;
@@ -145,7 +145,7 @@ public class AuthorServiceImpl implements AuthorService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.AUTHOR);
 
         Page<Author> page = authorRepository.findAll(
-                EntitySpecification.filterAuthors(requestDto.getKeyword(), requestDto.getSearchBy(), requestDto.getActiveFlag()),
+                AuthorSpecification.filterAuthors(requestDto.getKeyword(), requestDto.getSearchBy(), requestDto.getActiveFlag()),
                 pageable);
 
         PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.AUTHOR, page);

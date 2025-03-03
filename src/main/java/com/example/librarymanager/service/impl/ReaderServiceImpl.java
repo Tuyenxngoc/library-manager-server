@@ -11,7 +11,7 @@ import com.example.librarymanager.domain.dto.response.reader.ReaderDetailRespons
 import com.example.librarymanager.domain.dto.response.reader.ReaderResponseDto;
 import com.example.librarymanager.domain.entity.Reader;
 import com.example.librarymanager.domain.mapper.ReaderMappper;
-import com.example.librarymanager.domain.specification.EntitySpecification;
+import com.example.librarymanager.domain.specification.ReaderSpecification;
 import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.ConflictException;
 import com.example.librarymanager.exception.ForbiddenException;
@@ -235,7 +235,7 @@ public class ReaderServiceImpl implements ReaderService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.READER);
 
         Page<Reader> page = readerRepository.findAll(
-                EntitySpecification.filterReaders(requestDto.getKeyword(), requestDto.getSearchBy()),
+                ReaderSpecification.filterReaders(requestDto.getKeyword(), requestDto.getSearchBy()),
                 pageable);
 
         List<ReaderResponseDto> items = page.getContent().stream()

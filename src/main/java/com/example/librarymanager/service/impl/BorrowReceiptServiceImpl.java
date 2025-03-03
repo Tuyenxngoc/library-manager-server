@@ -13,9 +13,7 @@ import com.example.librarymanager.domain.dto.response.borrowreceipt.BorrowReceip
 import com.example.librarymanager.domain.dto.response.borrowreceipt.BorrowReceiptResponseDto;
 import com.example.librarymanager.domain.entity.*;
 import com.example.librarymanager.domain.mapper.BorrowReceiptMapper;
-import com.example.librarymanager.domain.specification.BookBorrowSpecification;
 import com.example.librarymanager.domain.specification.BorrowReceiptSpecification;
-import com.example.librarymanager.domain.specification.EntitySpecification;
 import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.ConflictException;
 import com.example.librarymanager.exception.NotFoundException;

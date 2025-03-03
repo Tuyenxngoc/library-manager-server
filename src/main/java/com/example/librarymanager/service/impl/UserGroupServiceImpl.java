@@ -11,7 +11,7 @@ import com.example.librarymanager.domain.entity.Role;
 import com.example.librarymanager.domain.entity.UserGroup;
 import com.example.librarymanager.domain.entity.UserGroupRole;
 import com.example.librarymanager.domain.mapper.UserGroupMapper;
-import com.example.librarymanager.domain.specification.EntitySpecification;
+import com.example.librarymanager.domain.specification.UserGroupSpecification;
 import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.ConflictException;
 import com.example.librarymanager.exception.NotFoundException;
@@ -178,7 +178,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.USER_GROUP);
 
         Page<UserGroup> page = userGroupRepository.findAll(
-                EntitySpecification.filterUserGroups(requestDto.getKeyword(), requestDto.getSearchBy(), requestDto.getActiveFlag()),
+                UserGroupSpecification.filterUserGroups(requestDto.getKeyword(), requestDto.getSearchBy(), requestDto.getActiveFlag()),
                 pageable);
 
         List<UserGroupResponseDto> items = page.getContent().stream()

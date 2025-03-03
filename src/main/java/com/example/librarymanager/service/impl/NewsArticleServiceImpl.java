@@ -12,7 +12,7 @@ import com.example.librarymanager.domain.dto.request.NewsArticleRequestDto;
 import com.example.librarymanager.domain.dto.response.NewsArticleResponseDto;
 import com.example.librarymanager.domain.entity.NewsArticle;
 import com.example.librarymanager.domain.mapper.NewsArticleMapper;
-import com.example.librarymanager.domain.specification.EntitySpecification;
+import com.example.librarymanager.domain.specification.NewsArticleSpecification;
 import com.example.librarymanager.exception.NotFoundException;
 import com.example.librarymanager.repository.NewsArticleRepository;
 import com.example.librarymanager.service.LogService;
@@ -118,7 +118,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.NEWS_ARTICLE);
 
         Page<NewsArticle> page = newsArticleRepository.findAll(
-                EntitySpecification.filterNewsArticles(requestDto.getKeyword(), requestDto.getSearchBy(), requestDto.getActiveFlag()),
+                NewsArticleSpecification.filterNewsArticles(requestDto.getKeyword(), requestDto.getSearchBy(), requestDto.getActiveFlag()),
                 pageable);
 
         PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.NEWS_ARTICLE, page);
@@ -155,7 +155,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.NEWS_ARTICLE);
 
         Page<NewsArticle> page = newsArticleRepository.findAll(
-                EntitySpecification.filterNewsArticles(requestDto.getKeyword(), requestDto.getSearchBy(), true),
+                NewsArticleSpecification.filterNewsArticles(requestDto.getKeyword(), requestDto.getSearchBy(), true),
                 pageable);
 
         List<NewsArticleResponseDto> items = page.getContent().stream()

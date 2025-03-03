@@ -13,7 +13,7 @@ import com.example.librarymanager.domain.entity.Reader;
 import com.example.librarymanager.domain.entity.User;
 import com.example.librarymanager.domain.entity.UserGroup;
 import com.example.librarymanager.domain.mapper.UserMapper;
-import com.example.librarymanager.domain.specification.EntitySpecification;
+import com.example.librarymanager.domain.specification.UserSpecification;
 import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.ConflictException;
 import com.example.librarymanager.exception.ForbiddenException;
@@ -223,7 +223,7 @@ public class UserServiceImpl implements UserService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.USER);
 
         Page<User> page = userRepository.findAll(
-                EntitySpecification.filterUsers(requestDto.getKeyword(), requestDto.getSearchBy()),
+                UserSpecification.filterUsers(requestDto.getKeyword(), requestDto.getSearchBy()),
                 pageable);
 
         List<UserResponseDto> items = page.getContent().stream()

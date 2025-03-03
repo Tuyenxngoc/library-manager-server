@@ -13,7 +13,7 @@ import com.example.librarymanager.domain.dto.response.reader.ReaderViolationResp
 import com.example.librarymanager.domain.entity.Reader;
 import com.example.librarymanager.domain.entity.ReaderViolation;
 import com.example.librarymanager.domain.mapper.ReaderViolationMapper;
-import com.example.librarymanager.domain.specification.EntitySpecification;
+import com.example.librarymanager.domain.specification.ReaderViolationSpecification;
 import com.example.librarymanager.exception.NotFoundException;
 import com.example.librarymanager.repository.ReaderRepository;
 import com.example.librarymanager.repository.ReaderViolationRepository;
@@ -107,7 +107,7 @@ public class ReaderViolationServiceImpl implements ReaderViolationService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.READER_VIOLATION);
 
         Page<ReaderViolation> page = readerViolationRepository.findAll(
-                EntitySpecification.filterReaderViolations(requestDto.getKeyword(), requestDto.getSearchBy()),
+                ReaderViolationSpecification.filterReaderViolations(requestDto.getKeyword(), requestDto.getSearchBy()),
                 pageable);
 
         List<ReaderViolationResponseDto> items = page.getContent().stream()

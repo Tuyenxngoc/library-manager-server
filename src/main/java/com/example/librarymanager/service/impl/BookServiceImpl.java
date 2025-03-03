@@ -7,7 +7,7 @@ import com.example.librarymanager.domain.dto.pagination.PaginationResponseDto;
 import com.example.librarymanager.domain.dto.pagination.PagingMeta;
 import com.example.librarymanager.domain.dto.response.book.BookResponseDto;
 import com.example.librarymanager.domain.entity.Book;
-import com.example.librarymanager.domain.specification.EntitySpecification;
+import com.example.librarymanager.domain.specification.BookSpecification;
 import com.example.librarymanager.exception.NotFoundException;
 import com.example.librarymanager.repository.BookRepository;
 import com.example.librarymanager.service.BookService;
@@ -60,7 +60,7 @@ public class BookServiceImpl implements BookService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.BOOK);
 
         Page<Book> page = bookRepository.findAll(
-                EntitySpecification.filterBooks(requestDto.getKeyword(), requestDto.getSearchBy(), bookCondition),
+                BookSpecification.filterBooks(requestDto.getKeyword(), requestDto.getSearchBy(), bookCondition),
                 pageable);
 
         List<BookResponseDto> items = page.getContent().stream()

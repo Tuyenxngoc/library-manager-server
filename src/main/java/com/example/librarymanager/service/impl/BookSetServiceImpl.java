@@ -12,7 +12,7 @@ import com.example.librarymanager.domain.dto.request.BookSetRequestDto;
 import com.example.librarymanager.domain.dto.response.bookset.BookSetResponseDto;
 import com.example.librarymanager.domain.entity.BookSet;
 import com.example.librarymanager.domain.mapper.BookSetMapper;
-import com.example.librarymanager.domain.specification.EntitySpecification;
+import com.example.librarymanager.domain.specification.BookSetSpecification;
 import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.ConflictException;
 import com.example.librarymanager.exception.NotFoundException;
@@ -130,7 +130,7 @@ public class BookSetServiceImpl implements BookSetService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.BOOK_SET);
 
         Page<BookSet> page = bookSetRepository.findAll(
-                EntitySpecification.filterBookSets(requestDto.getKeyword(), requestDto.getSearchBy(), requestDto.getActiveFlag()),
+                BookSetSpecification.filterBookSets(requestDto.getKeyword(), requestDto.getSearchBy(), requestDto.getActiveFlag()),
                 pageable);
 
         List<BookSetResponseDto> items = page.getContent().stream()
