@@ -12,6 +12,7 @@ import com.example.librarymanager.domain.dto.request.BookDefinitionRequestDto;
 import com.example.librarymanager.security.CustomUserDetails;
 import com.example.librarymanager.service.BookDefinitionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -119,6 +120,7 @@ public class BookDefinitionController {
             @RequestParam(value = "categoryGroupId", required = false) Long categoryGroupId,
             @RequestParam(value = "categoryId", required = false) Long categoryId,
             @RequestParam(value = "authorId", required = false) Long authorId,
+            @Parameter(description = "Filter type (only accepts 'most_borrowed' or 'new_releases')", example = "most_borrowed")
             @RequestParam(value = "filterType", required = false) String filterType
     ) {
         return VsResponseUtil.success(bookDefinitionService.getBooksForUser(requestDto, categoryGroupId, categoryId, authorId, filterType));
