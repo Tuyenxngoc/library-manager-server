@@ -13,6 +13,8 @@ import com.example.librarymanager.domain.dto.response.borrowreceipt.BorrowReceip
 import com.example.librarymanager.domain.dto.response.borrowreceipt.BorrowReceiptResponseDto;
 import com.example.librarymanager.domain.entity.*;
 import com.example.librarymanager.domain.mapper.BorrowReceiptMapper;
+import com.example.librarymanager.domain.specification.BookBorrowSpecification;
+import com.example.librarymanager.domain.specification.BorrowReceiptSpecification;
 import com.example.librarymanager.domain.specification.EntitySpecification;
 import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.ConflictException;
@@ -273,7 +275,7 @@ public class BorrowReceiptServiceImpl implements BorrowReceiptService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.BORROW_RECEIPT);
 
         Page<BorrowReceipt> page = borrowReceiptRepository.findAll(
-                EntitySpecification.filterBorrowReceipts(requestDto.getKeyword(), requestDto.getSearchBy(), status),
+                BorrowReceiptSpecification.filterBorrowReceipts(requestDto.getKeyword(), requestDto.getSearchBy(), status),
                 pageable);
 
         List<BorrowReceiptResponseDto> items = page.getContent().stream()
@@ -320,8 +322,8 @@ public class BorrowReceiptServiceImpl implements BorrowReceiptService {
 
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.BORROW_RECEIPT);
 
-        Specification<BorrowReceipt> spec = EntitySpecification.filterBorrowReceiptsByReader(cardNumber)
-                .and(EntitySpecification.filterBorrowReceipts(requestDto.getKeyword(), requestDto.getSearchBy(), status));
+        Specification<BorrowReceipt> spec = BorrowReceiptSpecification.filterBorrowReceiptsByReader(cardNumber)
+                .and(BorrowReceiptSpecification.filterBorrowReceipts(requestDto.getKeyword(), requestDto.getSearchBy(), status));
         Page<BorrowReceipt> page = borrowReceiptRepository.findAll(spec, pageable);
 
         List<BorrowReceiptForReaderResponseDto> items = page.getContent().stream()

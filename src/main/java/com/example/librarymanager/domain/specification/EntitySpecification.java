@@ -1,9 +1,10 @@
 package com.example.librarymanager.domain.specification;
 
-import com.example.librarymanager.constant.*;
+import com.example.librarymanager.constant.BookCondition;
+import com.example.librarymanager.constant.CardStatus;
+import com.example.librarymanager.constant.PenaltyForm;
 import com.example.librarymanager.domain.dto.filter.LibraryVisitFilter;
 import com.example.librarymanager.domain.dto.filter.LogFilter;
-import com.example.librarymanager.domain.dto.filter.TimeFilter;
 import com.example.librarymanager.domain.entity.*;
 import com.example.librarymanager.util.SpecificationsUtil;
 import jakarta.persistence.criteria.Join;
@@ -16,7 +17,6 @@ import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 public class EntitySpecification {
 
@@ -458,102 +458,6 @@ public class EntitySpecification {
         };
     }
 
-    public static Specification<BorrowReceipt> filterBorrowReceipts(String keyword, String searchBy, BorrowStatus status) {
-        return (root, query, builder) -> {
-            query.distinct(true);
-
-            Predicate predicate = builder.conjunction();
-
-            if (status != null) {
-                predicate = builder.and(predicate, builder.equal(root.get(BorrowReceipt_.status), status));
-            }
-
-            if (StringUtils.isNotBlank(keyword) && StringUtils.isNotBlank(searchBy)) {
-                switch (searchBy) {
-                    case BorrowReceipt_.RECEIPT_NUMBER ->
-                            predicate = builder.and(predicate, builder.like(root.get(BorrowReceipt_.receiptNumber), "%" + keyword + "%"));
-
-                    case Reader_.FULL_NAME -> {
-                        Join<BorrowReceipt, Reader> readerJoin = root.join(BorrowReceipt_.reader);
-                        predicate = builder.and(predicate, builder.like(readerJoin.get(Reader_.fullName), "%" + keyword + "%"));
-                    }
-
-                    case Reader_.CARD_NUMBER -> {
-                        Join<BorrowReceipt, Reader> readerJoin = root.join(BorrowReceipt_.reader);
-                        predicate = builder.and(predicate, builder.like(readerJoin.get(Reader_.cardNumber), "%" + keyword + "%"));
-                    }
-                }
-            }
-
-            return predicate;
-        };
-    }
-
-    public static Specification<BookBorrow> filterBookBorrows(List<BookBorrowStatus> status) {
-        return (root, query, builder) -> {
-            query.distinct(true);
-            Predicate predicate = builder.conjunction();
-
-            if (status != null && !status.isEmpty()) {
-                predicate = builder.and(predicate, root.get(BookBorrow_.status).in(status));
-            }
-
-            return predicate;
-        };
-    }
-
-    public static Specification<BookBorrow> filterBookBorrows(TimeFilter timeFilter) {
-        return (root, query, builder) -> {
-            query.distinct(true);
-            Predicate predicate = builder.conjunction();
-
-            if (timeFilter != null) {
-                if (timeFilter.getStartDate() != null) {
-                    predicate = builder.and(predicate,
-                            builder.greaterThanOrEqualTo(root.get(BookBorrow_.returnDate), timeFilter.getStartDate()));
-                }
-
-                if (timeFilter.getEndDate() != null) {
-                    predicate = builder.and(predicate,
-                            builder.lessThanOrEqualTo(root.get(BookBorrow_.returnDate), timeFilter.getEndDate()));
-                }
-            }
-
-            return predicate;
-        };
-    }
-
-    public static Specification<BookBorrow> filterBookBorrows(String keyword, String searchBy) {
-        return (root, query, builder) -> {
-            query.distinct(true);
-
-            Predicate predicate = builder.conjunction();
-
-            if (StringUtils.isNotBlank(keyword) && StringUtils.isNotBlank(searchBy)) {
-                switch (searchBy) {
-                    case BorrowReceipt_.RECEIPT_NUMBER -> {
-                        Join<BookBorrow, BorrowReceipt> borrowReceiptJoin = root.join(BookBorrow_.borrowReceipt);
-                        predicate = builder.and(predicate, builder.like(borrowReceiptJoin.get(BorrowReceipt_.receiptNumber), "%" + keyword + "%"));
-                    }
-
-                    case Reader_.FULL_NAME -> {
-                        Join<BookBorrow, BorrowReceipt> borrowReceiptJoin = root.join(BookBorrow_.borrowReceipt);
-                        Join<BorrowReceipt, Reader> readerJoin = borrowReceiptJoin.join(BorrowReceipt_.reader);
-                        predicate = builder.and(predicate, builder.like(readerJoin.get(Reader_.fullName), "%" + keyword + "%"));
-                    }
-
-                    case Reader_.CARD_NUMBER -> {
-                        Join<BookBorrow, BorrowReceipt> borrowReceiptJoin = root.join(BookBorrow_.borrowReceipt);
-                        Join<BorrowReceipt, Reader> readerJoin = borrowReceiptJoin.join(BorrowReceipt_.reader);
-                        predicate = builder.and(predicate, builder.like(readerJoin.get(Reader_.cardNumber), "%" + keyword + "%"));
-                    }
-                }
-            }
-
-            return predicate;
-        };
-    }
-
     public static Specification<Cart> filterCarts(String keyword, String searchBy) {
         return (root, query, builder) -> {
             query.distinct(true);
@@ -581,16 +485,4 @@ public class EntitySpecification {
         };
     }
 
-    public static Specification<BorrowReceipt> filterBorrowReceiptsByReader(String cardNumber) {
-        return (root, query, builder) -> {
-            query.distinct(true);
-
-            Predicate predicate = builder.conjunction();
-
-            Join<BorrowReceipt, Reader> borrowReceiptReaderJoin = root.join(BorrowReceipt_.reader, JoinType.INNER);
-            predicate = builder.and(predicate, builder.equal(borrowReceiptReaderJoin.get(Reader_.cardNumber), cardNumber));
-
-            return predicate;
-        };
-    }
 }

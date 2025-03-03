@@ -11,7 +11,7 @@ import com.example.librarymanager.domain.dto.response.bookborrow.BookBorrowRespo
 import com.example.librarymanager.domain.entity.Book;
 import com.example.librarymanager.domain.entity.BookBorrow;
 import com.example.librarymanager.domain.entity.BorrowReceipt;
-import com.example.librarymanager.domain.specification.EntitySpecification;
+import com.example.librarymanager.domain.specification.BookBorrowSpecification;
 import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.NotFoundException;
 import com.example.librarymanager.repository.BookBorrowRepository;
@@ -62,9 +62,9 @@ public class BookBorrowServiceImpl implements BookBorrowService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.BOOK_BORROW);
 
         Specification<BookBorrow> spec =
-                EntitySpecification.filterBookBorrows(status)
-                        .and(EntitySpecification.filterBookBorrows(timeFilter))
-                        .and(EntitySpecification.filterBookBorrows(requestDto.getKeyword(), requestDto.getSearchBy()));
+                BookBorrowSpecification.filterBookBorrows(status)
+                        .and(BookBorrowSpecification.filterBookBorrows(timeFilter))
+                        .and(BookBorrowSpecification.filterBookBorrows(requestDto.getKeyword(), requestDto.getSearchBy()));
         Page<BookBorrow> page = bookBorrowRepository.findAll(spec, pageable);
 
         List<BookBorrowResponseDto> items = page.getContent().stream()
