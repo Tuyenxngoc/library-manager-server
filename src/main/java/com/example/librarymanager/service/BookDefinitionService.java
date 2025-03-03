@@ -35,7 +35,7 @@ public interface BookDefinitionService {
 
     PaginationResponseDto<BookByBookDefinitionResponseDto> getBooks(PaginationFullRequestDto requestDto, Long categoryGroupId, Long categoryId);
 
-    PaginationResponseDto<BookForReaderResponseDto> getBooksForUser(PaginationFullRequestDto requestDto, Long categoryGroupId, Long categoryId, Long authorId);
+    PaginationResponseDto<BookForReaderResponseDto> getBooksForUser(PaginationFullRequestDto requestDto, Long categoryGroupId, Long categoryId, Long authorId, String filterType);
 
     BookDetailForReaderResponseDto getBookDetailForUser(Long id);
 

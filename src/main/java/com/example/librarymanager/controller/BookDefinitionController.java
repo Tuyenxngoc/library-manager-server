@@ -118,9 +118,10 @@ public class BookDefinitionController {
             @ParameterObject PaginationFullRequestDto requestDto,
             @RequestParam(value = "categoryGroupId", required = false) Long categoryGroupId,
             @RequestParam(value = "categoryId", required = false) Long categoryId,
-            @RequestParam(value = "authorId", required = false) Long authorId
+            @RequestParam(value = "authorId", required = false) Long authorId,
+            @RequestParam(value = "filterType", required = false) String filterType
     ) {
-        return VsResponseUtil.success(bookDefinitionService.getBooksForUser(requestDto, categoryGroupId, categoryId, authorId));
+        return VsResponseUtil.success(bookDefinitionService.getBooksForUser(requestDto, categoryGroupId, categoryId, authorId, filterType));
     }
 
     @Operation(summary = "API Get Book Detail For User")

@@ -45,7 +45,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.example.librarymanager.domain.specification.EntitySpecification.*;
+import static com.example.librarymanager.domain.specification.BookDefinitionSpecification.*;
 
 @Slf4j
 @Service
@@ -405,7 +405,7 @@ public class BookDefinitionServiceImpl implements BookDefinitionService {
     }
 
     @Override
-    public PaginationResponseDto<BookForReaderResponseDto> getBooksForUser(PaginationFullRequestDto requestDto, Long categoryGroupId, Long categoryId, Long authorId) {
+    public PaginationResponseDto<BookForReaderResponseDto> getBooksForUser(PaginationFullRequestDto requestDto, Long categoryGroupId, Long categoryId, Long authorId, String filterType) {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.BOOK_DEFINITION);
 
         Specification<BookDefinition> spec = Specification.where(baseFilterBookDefinitions(requestDto.getKeyword(), requestDto.getSearchBy(), requestDto.getActiveFlag()))
@@ -413,6 +413,12 @@ public class BookDefinitionServiceImpl implements BookDefinitionService {
                 .and(filterByCategoryGroupId(categoryGroupId))
                 .and(filterByAuthorId(authorId))
                 .and(filterByBooksCountGreaterThanZero());
+
+        if ("most_borrowed".equalsIgnoreCase(filterType)) {
+            spec = spec.and(orderByBorrowCount());
+        } else if ("new_releases".equalsIgnoreCase(filterType)) {
+            spec = spec.and(orderByNewReleases());
+        }
 
         Page<BookDefinition> page = bookDefinitionRepository.findAll(spec, pageable);
 
