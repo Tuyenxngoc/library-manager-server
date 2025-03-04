@@ -7,6 +7,7 @@ import com.example.librarymanager.domain.dto.pagination.PaginationResponseDto;
 import com.example.librarymanager.domain.dto.pagination.PagingMeta;
 import com.example.librarymanager.domain.dto.request.CreateReaderCardsRequestDto;
 import com.example.librarymanager.domain.dto.request.ReaderRequestDto;
+import com.example.librarymanager.domain.dto.response.LibraryInfoResponseDto;
 import com.example.librarymanager.domain.dto.response.reader.ReaderDetailResponseDto;
 import com.example.librarymanager.domain.dto.response.reader.ReaderResponseDto;
 import com.example.librarymanager.domain.entity.Reader;
@@ -20,6 +21,7 @@ import com.example.librarymanager.repository.ReaderRepository;
 import com.example.librarymanager.service.LogService;
 import com.example.librarymanager.service.PdfService;
 import com.example.librarymanager.service.ReaderService;
+import com.example.librarymanager.service.SystemSettingService;
 import com.example.librarymanager.util.PaginationUtil;
 import com.example.librarymanager.util.UploadFileUtil;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +61,8 @@ public class ReaderServiceImpl implements ReaderService {
     private final MessageSource messageSource;
 
     private final PdfService pdfService;
+
+    private final SystemSettingService systemSettingService;
 
     public static void validateReaderStatus(Reader reader) {
         switch (reader.getStatus()) {
@@ -269,7 +273,8 @@ public class ReaderServiceImpl implements ReaderService {
         if (readers.isEmpty()) {
             throw new BadRequestException(ErrorMessage.Reader.ERR_NOT_FOUND_ID, requestDto.getReaderIds());
         }
-        return pdfService.createReaderCard(requestDto, readers);
+        LibraryInfoResponseDto libraryInfo = systemSettingService.getLibraryInfo();
+        return pdfService.createReaderCard(libraryInfo.getEducationOffice(), libraryInfo.getSchool(), libraryInfo.getPrincipalName(), readers);
     }
 
     @Override

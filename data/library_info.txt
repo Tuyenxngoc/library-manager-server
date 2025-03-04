@@ -6,6 +6,7 @@ countryCode=+84
 provinceCity=Hà Nội
 educationOffice=Sở giáo dục và đào tạo Hà Nội
 school=Trường THPT Lê Quý Đôn
+principalName=Nguyễn Phương Chinh
 phoneNumber=02435725412
 alternatePhoneNumber=
 faxNumber=

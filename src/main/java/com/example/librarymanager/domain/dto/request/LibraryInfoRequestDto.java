@@ -36,6 +36,9 @@ public class LibraryInfoRequestDto {
     private String school;
 
     @NotNull(message = ErrorMessage.INVALID_SOME_THING_FIELD_IS_REQUIRED)
+    private String principalName;
+
+    @NotNull(message = ErrorMessage.INVALID_SOME_THING_FIELD_IS_REQUIRED)
     private String phoneNumber;
 
     private String alternatePhoneNumber;

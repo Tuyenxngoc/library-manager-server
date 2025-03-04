@@ -183,6 +183,9 @@ public class SystemSettingImpl implements SystemSettingService {
                     case "school":
                         responseDto.setSchool(value);
                         break;
+                    case "principalName":
+                        responseDto.setPrincipalName(value);
+                        break;
                     case "phoneNumber":
                         responseDto.setPhoneNumber(value);
                         break;
@@ -256,6 +259,7 @@ public class SystemSettingImpl implements SystemSettingService {
                 writer.write("provinceCity=" + requestDto.getProvinceCity() + "\n");
                 writer.write("educationOffice=" + requestDto.getEducationOffice() + "\n");
                 writer.write("school=" + requestDto.getSchool() + "\n");
+                writer.write("principalName=" + requestDto.getPrincipalName() + "\n");
                 writer.write("phoneNumber=" + requestDto.getPhoneNumber() + "\n");
                 writer.write("alternatePhoneNumber=" + requestDto.getAlternatePhoneNumber() + "\n");
                 writer.write("faxNumber=" + requestDto.getFaxNumber() + "\n");

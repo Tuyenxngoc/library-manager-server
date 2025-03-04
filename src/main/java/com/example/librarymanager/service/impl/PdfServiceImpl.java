@@ -1,6 +1,5 @@
 package com.example.librarymanager.service.impl;
 
-import com.example.librarymanager.domain.dto.request.CreateReaderCardsRequestDto;
 import com.example.librarymanager.domain.entity.*;
 import com.example.librarymanager.service.PdfService;
 import com.itextpdf.text.*;
@@ -75,7 +74,7 @@ public class PdfServiceImpl implements PdfService {
     }
 
     @Override
-    public byte[] createReaderCard(CreateReaderCardsRequestDto requestDto, List<Reader> readers) {
+    public byte[] createReaderCard(String managementUnit, String schoolName, String principalName, List<Reader> readers) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Document document = new Document(PageSize.A4, 10, 10, 10, 10);
 
@@ -100,8 +99,8 @@ public class PdfServiceImpl implements PdfService {
                     cardContainer.setWidthPercentage(100);
 
                     PdfPCell headerCell = new PdfPCell();
-                    headerCell.addElement(createParagraph(requestDto.getManagementUnit(), headerFont, Element.ALIGN_CENTER));
-                    headerCell.addElement(createParagraph(requestDto.getSchoolName(), headerFont, Element.ALIGN_CENTER));
+                    headerCell.addElement(createParagraph(managementUnit, headerFont, Element.ALIGN_CENTER));
+                    headerCell.addElement(createParagraph(schoolName, headerFont, Element.ALIGN_CENTER));
                     headerCell.setBorder(Rectangle.NO_BORDER);
                     cardContainer.addCell(headerCell);
 
@@ -115,7 +114,7 @@ public class PdfServiceImpl implements PdfService {
                     avatarCell.setBorder(Rectangle.NO_BORDER);
                     cardContentTable.addCell(avatarCell);
 
-                    PdfPCell infoCell = createInfoCell(requestDto, reader);
+                    PdfPCell infoCell = createInfoCell(principalName, reader);
                     cardContentTable.addCell(infoCell);
 
                     PdfPCell cardCell = new PdfPCell(cardContentTable);
@@ -180,7 +179,7 @@ public class PdfServiceImpl implements PdfService {
         return avatarTable;
     }
 
-    private PdfPCell createInfoCell(CreateReaderCardsRequestDto requestDto, Reader reader) {
+    private PdfPCell createInfoCell(String principalName, Reader reader) {
         PdfPCell infoCell = new PdfPCell();
         infoCell.setBorder(Rectangle.NO_BORDER);
 
@@ -190,7 +189,7 @@ public class PdfServiceImpl implements PdfService {
         infoCell.addElement(new Paragraph(String.format("Ngày sinh: %s", reader.getDateOfBirth() != null ? reader.getDateOfBirth().format(formatter) : "Không có"), normalFontMedium));
         infoCell.addElement(new Paragraph(String.format("Ngày hết hạn: %s", reader.getExpiryDate() != null ? reader.getExpiryDate().format(formatter) : "Không có"), normalFontMedium));
         infoCell.addElement(createParagraph("Ban giám hiệu", normalFontMedium, Element.ALIGN_CENTER));
-        infoCell.addElement(createParagraph(requestDto.getPrincipalName().toUpperCase(), italicFontMedium, Element.ALIGN_CENTER));
+        infoCell.addElement(createParagraph(principalName.toUpperCase(), italicFontMedium, Element.ALIGN_CENTER));
 
         return infoCell;
     }

@@ -22,6 +22,8 @@ public class LibraryInfoResponseDto {
 
     private String school;
 
+    private String principalName;
+
     private String phoneNumber;
 
     private String alternatePhoneNumber;
