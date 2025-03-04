@@ -6,14 +6,14 @@ import com.example.librarymanager.constant.ErrorMessage;
 import com.example.librarymanager.exception.BadGatewayException;
 import com.example.librarymanager.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Map;
 
-@Slf4j
+@Log4j2
 @Component
 @RequiredArgsConstructor
 public class UploadFileUtil {

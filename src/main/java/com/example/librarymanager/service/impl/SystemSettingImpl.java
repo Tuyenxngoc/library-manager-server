@@ -12,6 +12,7 @@ import com.example.librarymanager.service.LogService;
 import com.example.librarymanager.service.SystemSettingService;
 import com.example.librarymanager.util.UploadFileUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class SystemSettingImpl implements SystemSettingService {
@@ -73,7 +75,7 @@ public class SystemSettingImpl implements SystemSettingService {
         try {
             return new String(Files.readAllBytes(Paths.get(LIBRARY_RULES_FILE_PATH)));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error reading library rules file", e);
             return "Error reading library rules: " + e.getMessage();
         }
     }
@@ -106,7 +108,7 @@ public class SystemSettingImpl implements SystemSettingService {
 
             return new LibraryConfigResponseDto(rowsPerPage, reservationTime, maxBorrowLimit, maxRenewalTimes, maxRenewalDays);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error reading library config file", e);
             throw new RuntimeException("Error reading library config file.");
         }
     }
@@ -134,7 +136,7 @@ public class SystemSettingImpl implements SystemSettingService {
             String message = messageSource.getMessage(SuccessMessage.UPDATE, null, LocaleContextHolder.getLocale());
             return new CommonResponseDto(message);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error updating library config file", e);
             throw new RuntimeException("Error updating library config file.");
         }
     }
@@ -216,7 +218,7 @@ public class SystemSettingImpl implements SystemSettingService {
             }
             return responseDto;
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error reading library info file", e);
             throw new RuntimeException("Error reading library info file.");
         }
     }
@@ -275,7 +277,7 @@ public class SystemSettingImpl implements SystemSettingService {
             String message = messageSource.getMessage(SuccessMessage.UPDATE, null, LocaleContextHolder.getLocale());
             return new CommonResponseDto(message);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error updating library info", e);
             throw new RuntimeException("Error updating library info.");
         }
     }

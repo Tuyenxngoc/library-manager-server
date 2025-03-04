@@ -1,13 +1,13 @@
 package com.example.librarymanager.aop.aspect;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-@Slf4j
+@Log4j2
 @Aspect
 @Configuration
 public class RepositoryAspect {

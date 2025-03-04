@@ -23,7 +23,7 @@ import com.example.librarymanager.service.CategoryService;
 import com.example.librarymanager.service.LogService;
 import com.example.librarymanager.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-@Slf4j
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {

@@ -9,6 +9,7 @@ import com.example.librarymanager.service.LogService;
 import com.example.librarymanager.service.SlideService;
 import com.example.librarymanager.util.UploadFileUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class SlideServiceImpl implements SlideService {
@@ -48,7 +50,7 @@ public class SlideServiceImpl implements SlideService {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error reading file: {}", filePath, e);
         }
         return slides;
     }
@@ -67,7 +69,7 @@ public class SlideServiceImpl implements SlideService {
         try {
             Files.write(Paths.get(filePath), lines);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error writing to file: {}", filePath, e);
         }
     }
 

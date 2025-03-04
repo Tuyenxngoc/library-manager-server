@@ -6,6 +6,7 @@ import com.example.librarymanager.repository.BorrowReceiptRepository;
 import com.example.librarymanager.util.SendMailUtil;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+@Log4j2
 @Component
 @RequiredArgsConstructor
 public class BookReturnReminderScheduler {
@@ -44,7 +46,7 @@ public class BookReturnReminderScheduler {
                 try {
                     sendMailUtil.sendEmailWithHTML(mailDto, "reminderEmail.html");
                 } catch (MessagingException e) {
-                    e.printStackTrace();
+                    log.error("Error sending reminder email to {}", record.getReader().getEmail(), e);
                 }
             });
         }

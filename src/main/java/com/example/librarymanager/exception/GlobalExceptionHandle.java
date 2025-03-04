@@ -7,7 +7,7 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Slf4j
+@Log4j2
 @RestControllerAdvice
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -45,11 +45,15 @@ public class GlobalExceptionHandle {
 
     MessageSource messageSource;
 
+    private String getMessage(String code, Object[] args) {
+        return messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<RestData<?>> handlerInternalServerError(Exception ex) {
         log.error("Internal Server Error: {}", ex.getMessage(), ex);
-        String errorMessage = messageSource.getMessage(ErrorMessage.ERR_EXCEPTION_GENERAL, null, LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ErrorMessage.ERR_EXCEPTION_GENERAL, null);
         return VsResponseUtil.error(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
     }
 
@@ -59,8 +63,7 @@ public class GlobalExceptionHandle {
         Map<String, String> result = new LinkedHashMap<>();
         ex.getConstraintViolations().forEach((error) -> {
             String fieldName = ((PathImpl) error.getPropertyPath()).getLeafNode().getName();
-            String errorMessage = messageSource.getMessage(Objects.requireNonNull(error.getMessage()), null,
-                    LocaleContextHolder.getLocale());
+            String errorMessage = getMessage(Objects.requireNonNull(error.getMessage()), null);
             result.put(fieldName, errorMessage);
         });
         return VsResponseUtil.error(HttpStatus.BAD_REQUEST, result);
@@ -74,8 +77,7 @@ public class GlobalExceptionHandle {
             String fieldName = ((FieldError) error).getField();
             String errorMessage;
             try {
-                errorMessage = messageSource.getMessage(Objects.requireNonNull(error.getDefaultMessage()), null,
-                        LocaleContextHolder.getLocale());
+                errorMessage = getMessage(Objects.requireNonNull(error.getDefaultMessage()), null);
             } catch (NoSuchMessageException e) {
                 errorMessage = error.getDefaultMessage();
             }
@@ -87,63 +89,63 @@ public class GlobalExceptionHandle {
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<RestData<?>> handlerNotFoundException(NotFoundException ex) {
-        String errorMessage = messageSource.getMessage(ex.getMessage(), ex.getParams(), LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ex.getMessage(), ex.getParams());
         return VsResponseUtil.error(HttpStatus.NOT_FOUND, errorMessage);
     }
 
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<RestData<?>> handlerInvalidException(BadRequestException ex) {
-        String errorMessage = messageSource.getMessage(ex.getMessage(), ex.getParams(), LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ex.getMessage(), ex.getParams());
         return VsResponseUtil.error(HttpStatus.BAD_REQUEST, errorMessage);
     }
 
     @ExceptionHandler(BadGatewayException.class)
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
     public ResponseEntity<RestData<?>> handleUploadImageException(BadGatewayException ex) {
-        String errorMessage = messageSource.getMessage(ex.getMessage(), ex.getParams(), LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ex.getMessage(), ex.getParams());
         return VsResponseUtil.error(HttpStatus.BAD_GATEWAY, errorMessage);
     }
 
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<RestData<?>> handleUnauthorizedException(UnauthorizedException ex) {
-        String errorMessage = messageSource.getMessage(ex.getMessage(), ex.getParams(), LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ex.getMessage(), ex.getParams());
         return VsResponseUtil.error(HttpStatus.UNAUTHORIZED, errorMessage);
     }
 
     @ExceptionHandler(ForbiddenException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<RestData<?>> handleForbiddenException(ForbiddenException ex) {
-        String errorMessage = messageSource.getMessage(ex.getMessage(), ex.getParams(), LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ex.getMessage(), ex.getParams());
         return VsResponseUtil.error(HttpStatus.FORBIDDEN, errorMessage);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<RestData<?>> handleAccessDeniedException() {
-        String errorMessage = messageSource.getMessage(ErrorMessage.ERR_FORBIDDEN, null, LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ErrorMessage.ERR_FORBIDDEN, null);
         return VsResponseUtil.error(HttpStatus.FORBIDDEN, errorMessage);
     }
 
     @ExceptionHandler(ConflictException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<RestData<?>> handleDataIntegrityViolationException(ConflictException ex) {
-        String errorMessage = messageSource.getMessage(ex.getMessage(), ex.getParams(), LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ex.getMessage(), ex.getParams());
         return VsResponseUtil.error(HttpStatus.CONFLICT, errorMessage);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<RestData<?>> handleHttpMessageNotReadableException() {
-        String errorMessage = messageSource.getMessage(ErrorMessage.ERR_REQUEST_BODY, null, LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ErrorMessage.ERR_REQUEST_BODY, null);
         return VsResponseUtil.error(HttpStatus.BAD_REQUEST, errorMessage);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public ResponseEntity<RestData<?>> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
-        String errorMessage = messageSource.getMessage(ErrorMessage.ERR_METHOD_NOT_SUPPORTED, ex.getSupportedMethods(), LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ErrorMessage.ERR_METHOD_NOT_SUPPORTED, ex.getSupportedMethods());
         return VsResponseUtil.error(HttpStatus.METHOD_NOT_ALLOWED, errorMessage);
     }
 
@@ -151,7 +153,7 @@ public class GlobalExceptionHandle {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<RestData<?>> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
         String parameterName = ex.getParameterName();
-        String errorMessage = messageSource.getMessage(ErrorMessage.ERR_REQUIRED_MISSING_PARAMETER, new Object[]{parameterName}, LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ErrorMessage.ERR_REQUIRED_MISSING_PARAMETER, new Object[]{parameterName});
         return VsResponseUtil.error(HttpStatus.BAD_REQUEST, errorMessage);
     }
 
@@ -159,7 +161,7 @@ public class GlobalExceptionHandle {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<RestData<?>> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
         String parameterName = ex.getParameter().getParameterName();
-        String errorMessage = messageSource.getMessage(ErrorMessage.ERR_METHOD_ARGUMENT_TYPE_MISMATCH, new Object[]{parameterName}, LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ErrorMessage.ERR_METHOD_ARGUMENT_TYPE_MISMATCH, new Object[]{parameterName});
         return VsResponseUtil.error(HttpStatus.BAD_REQUEST, errorMessage);
     }
 
@@ -167,14 +169,14 @@ public class GlobalExceptionHandle {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<RestData<?>> handleNoResourceFoundException(NoResourceFoundException ex) {
         String resourcePath = ex.getResourcePath();
-        String errorMessage = messageSource.getMessage(ErrorMessage.ERR_RESOURCE_NOT_FOUND, new Object[]{resourcePath}, LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ErrorMessage.ERR_RESOURCE_NOT_FOUND, new Object[]{resourcePath});
         return VsResponseUtil.error(HttpStatus.NOT_FOUND, errorMessage);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
     public ResponseEntity<RestData<?>> handleMaxUploadSizeExceeded() {
-        String errorMessage = messageSource.getMessage(ErrorMessage.INVALID_MAX_UPLOAD_SIZE_EXCEEDED, null, LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ErrorMessage.INVALID_MAX_UPLOAD_SIZE_EXCEEDED, null);
         return VsResponseUtil.error(HttpStatus.PAYLOAD_TOO_LARGE, errorMessage);
     }
 
@@ -182,7 +184,7 @@ public class GlobalExceptionHandle {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<RestData<?>> handleMissingServletRequestPartException(MissingServletRequestPartException ex) {
         String partName = ex.getRequestPartName();
-        String errorMessage = messageSource.getMessage(ErrorMessage.ERR_MISSING_SERVLET_REQUEST_PART, new Object[]{partName}, LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ErrorMessage.ERR_MISSING_SERVLET_REQUEST_PART, new Object[]{partName});
         return VsResponseUtil.error(HttpStatus.BAD_REQUEST, errorMessage);
     }
 
@@ -192,7 +194,7 @@ public class GlobalExceptionHandle {
         String supportedContentType = ex.getSupportedMediaTypes().stream()
                 .map(MediaType::toString)
                 .collect(Collectors.joining());
-        String errorMessage = messageSource.getMessage(ErrorMessage.ERR_UNSUPPORTED_MEDIA_TYPE, new Object[]{supportedContentType}, LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ErrorMessage.ERR_UNSUPPORTED_MEDIA_TYPE, new Object[]{supportedContentType});
         return VsResponseUtil.error(HttpStatus.UNSUPPORTED_MEDIA_TYPE, errorMessage);
     }
 
@@ -200,7 +202,7 @@ public class GlobalExceptionHandle {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<RestData<?>> handleMultipartException(MultipartException ex) {
         log.error("Multipart Exception: {}", ex.getMessage(), ex);
-        String errorMessage = messageSource.getMessage(ErrorMessage.ERR_MULTIPART_EXCEPTION, null, LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ErrorMessage.ERR_MULTIPART_EXCEPTION, null);
         return VsResponseUtil.error(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
     }
 
@@ -208,7 +210,7 @@ public class GlobalExceptionHandle {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<RestData<?>> handleIllegalArgumentException(IllegalArgumentException ex) {
         log.error("Illegal Argument Exception: {}", ex.getMessage(), ex);
-        String errorMessage = messageSource.getMessage(ErrorMessage.ERR_ILLEGAL_ARGUMENT, null, LocaleContextHolder.getLocale());
+        String errorMessage = getMessage(ErrorMessage.ERR_ILLEGAL_ARGUMENT, null);
         return VsResponseUtil.error(HttpStatus.BAD_REQUEST, errorMessage);
     }
 
