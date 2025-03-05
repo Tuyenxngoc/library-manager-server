@@ -16,7 +16,7 @@ public interface PdfService {
 
     byte[] createPdfFromBooks(List<Book> books);
 
-    byte[] createLabelType1Pdf(List<Book> books);
+    byte[] createLabelType1Pdf(String librarySymbol, List<Book> books);
 
     byte[] createLabelType2Pdf(List<Book> books);
 

@@ -169,6 +169,7 @@ public class PdfServiceImpl implements PdfService {
 
         Barcode128 barcode = new Barcode128();
         barcode.setCode(reader.getCardNumber());
+
         Image barcodeImage = barcode.createImageWithBarcode(writer.getDirectContent(), null, null);
         barcodeImage.setAlignment(Element.ALIGN_CENTER);
         barcodeImage.scalePercent(80);
@@ -511,7 +512,7 @@ public class PdfServiceImpl implements PdfService {
     }
 
     @Override
-    public byte[] createLabelType1Pdf(List<Book> books) {
+    public byte[] createLabelType1Pdf(String librarySymbol, List<Book> books) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Document document = new Document(PageSize.A4, 10, 10, 10, 10);
 
@@ -537,7 +538,7 @@ public class PdfServiceImpl implements PdfService {
                 PdfPTable labelTable = new PdfPTable(1);
                 labelTable.setWidthPercentage(100);
 
-                PdfPCell nameCell = new PdfPCell(new Phrase("HAUI", boldFontMedium));
+                PdfPCell nameCell = new PdfPCell(new Phrase(librarySymbol.toUpperCase(), boldFontMedium));
                 nameCell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 nameCell.setBorder(Rectangle.BOX);
                 labelTable.addCell(nameCell);
@@ -626,7 +627,7 @@ public class PdfServiceImpl implements PdfService {
                 sdkcbCell.setRotation(90);
                 labelTable.addCell(sdkcbCell);
 
-                PdfPCell khksCell = new PdfPCell(new Phrase("KHKS", boldFontMedium));
+                PdfPCell khksCell = new PdfPCell(new Phrase("KHKS", boldFontMedium));// ky hieu kho sach
                 khksCell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 khksCell.setBorder(Rectangle.BOX);
                 labelTable.addCell(khksCell);

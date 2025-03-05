@@ -25,6 +25,7 @@ import com.example.librarymanager.repository.*;
 import com.example.librarymanager.service.BookDefinitionService;
 import com.example.librarymanager.service.LogService;
 import com.example.librarymanager.service.PdfService;
+import com.example.librarymanager.service.SystemSettingService;
 import com.example.librarymanager.util.PaginationUtil;
 import com.example.librarymanager.util.UploadFileUtil;
 import lombok.RequiredArgsConstructor;
@@ -79,6 +80,8 @@ public class BookDefinitionServiceImpl implements BookDefinitionService {
     private final LogService logService;
 
     private final PdfService pdfService;
+
+    private final SystemSettingService systemSettingService;
 
     @Override
     public void initBookDefinitionsFromCsv(String bookDefinitionsCsvPath) {
@@ -498,7 +501,7 @@ public class BookDefinitionServiceImpl implements BookDefinitionService {
     @Override
     public byte[] getBooksLabelType1PdfContent(Set<Long> ids) {
         List<Book> books = bookRepository.findAllByBookDefinitionIdIn(ids);
-        return pdfService.createLabelType1Pdf(books);
+        return pdfService.createLabelType1Pdf(systemSettingService.getLibraryInfo().getLibrarySymbol(), books);
     }
 
     @Override

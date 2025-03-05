@@ -13,6 +13,7 @@ import com.example.librarymanager.repository.BookRepository;
 import com.example.librarymanager.service.BookService;
 import com.example.librarymanager.service.LogService;
 import com.example.librarymanager.service.PdfService;
+import com.example.librarymanager.service.SystemSettingService;
 import com.example.librarymanager.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -37,6 +38,8 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
 
     private final PdfService pdfService;
+
+    private final SystemSettingService systemSettingService;
 
     private Book getEntity(long id) {
         return bookRepository.findById(id)
@@ -100,7 +103,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public byte[] getBooksLabelType1PdfContent(Set<Long> ids) {
         List<Book> books = bookRepository.findAllById(ids);
-        return pdfService.createLabelType1Pdf(books);
+        return pdfService.createLabelType1Pdf(systemSettingService.getLibraryInfo().getLibrarySymbol(), books);
     }
 
     @Override
