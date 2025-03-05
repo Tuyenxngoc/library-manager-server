@@ -21,7 +21,8 @@ public class BookDefinitionSpecification {
             "title", List.of(QueryOperator.LIKE, QueryOperator.EQUALS),
             "author", List.of(QueryOperator.LIKE, QueryOperator.EQUALS, QueryOperator.IN),
             "publisher", List.of(QueryOperator.LIKE, QueryOperator.EQUALS, QueryOperator.IN),
-            "publishingYear", List.of(QueryOperator.EQUALS, QueryOperator.GREATER_THAN, QueryOperator.LESS_THAN)
+            "publishingYear", List.of(QueryOperator.EQUALS, QueryOperator.GREATER_THAN, QueryOperator.LESS_THAN),
+            "isbn", List.of(QueryOperator.LIKE, QueryOperator.EQUALS)
     );
 
     public static Specification<BookDefinition> baseFilterBookDefinitions(String keyword, String searchBy, Boolean activeFlag) {
