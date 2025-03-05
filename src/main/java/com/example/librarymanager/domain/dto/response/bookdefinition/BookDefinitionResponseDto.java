@@ -18,7 +18,7 @@ public class BookDefinitionResponseDto {
 
     private final String isbn;
 
-    private final String publishingYear;
+    private final Integer publishingYear;
 
     private final String edition;
 

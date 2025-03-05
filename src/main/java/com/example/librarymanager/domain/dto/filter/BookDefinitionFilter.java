@@ -16,7 +16,7 @@ public class BookDefinitionFilter {
 
     private String keyword;
 
-    private String publishingYear;
+    private Integer publishingYear;
 
     private String author;
 }

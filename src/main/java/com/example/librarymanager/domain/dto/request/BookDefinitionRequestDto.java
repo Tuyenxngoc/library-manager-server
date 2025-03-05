@@ -47,8 +47,7 @@ public class BookDefinitionRequestDto {
     @Size(max = 100, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String publicationPlace; // Nơi xuất bản
 
-    @Size(max = 100, message = ErrorMessage.INVALID_TEXT_LENGTH)
-    private String publishingYear; // Năm xuất bản
+    private Integer publishingYear; // Năm xuất bản
 
     @Size(max = 100, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String edition; // Lần xuất bản

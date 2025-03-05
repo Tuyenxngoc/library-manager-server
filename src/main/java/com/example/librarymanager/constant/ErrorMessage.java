@@ -53,6 +53,7 @@ public class ErrorMessage {
     public static final String INVALID_FILE_SIZE = "invalid.file.size";
     public static final String INVALID_FILE_TYPE = "invalid.file.type";
     public static final String INVALID_URL_FORMAT = "invalid.url-format";
+    public static final String INVALID_OPERATOR_NOT_SUPPORTED = "invalid.operator.not-supported";
 
     public static class Auth {
         public static final String ERR_INCORRECT_USERNAME_PASSWORD = "exception.auth.incorrect.username-password";

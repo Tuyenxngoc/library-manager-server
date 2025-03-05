@@ -15,7 +15,7 @@ public class BookByBookDefinitionResponseDto {
 
     private final String bookCode;
 
-    private final String publishingYear;
+    private final Integer publishingYear;
 
     private long totalBooks; // Tổng số sách
 

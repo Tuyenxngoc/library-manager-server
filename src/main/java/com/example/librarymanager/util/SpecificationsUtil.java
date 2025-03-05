@@ -10,20 +10,20 @@ public class SpecificationsUtil {
 
     public static Object castToRequiredType(Class<?> fieldType, String value) {
         try {
-            if (fieldType.isAssignableFrom(Double.class)) {
-                return Double.valueOf(value);
-            } else if (fieldType.isAssignableFrom(Float.class)) {
-                return Float.valueOf(value);
-            } else if (fieldType.isAssignableFrom(Long.class)) {
-                return Long.valueOf(value);
-            } else if (fieldType.isAssignableFrom(Integer.class)) {
-                return Integer.valueOf(value);
-            } else if (fieldType.isAssignableFrom(Short.class)) {
-                return Short.valueOf(value);
-            } else if (fieldType.isAssignableFrom(Byte.class)) {
-                return Byte.valueOf(value);
-            } else if (fieldType.isAssignableFrom(Boolean.class)) {
-                return Boolean.valueOf(value);
+            if (fieldType.equals(Double.class) || fieldType.equals(double.class)) {
+                return Double.parseDouble(value);
+            } else if (fieldType.equals(Float.class) || fieldType.equals(float.class)) {
+                return Float.parseFloat(value);
+            } else if (fieldType.equals(Long.class) || fieldType.equals(long.class)) {
+                return Long.parseLong(value);
+            } else if (fieldType.equals(Integer.class) || fieldType.equals(int.class)) {
+                return Integer.parseInt(value);
+            } else if (fieldType.equals(Short.class) || fieldType.equals(short.class)) {
+                return Short.parseShort(value);
+            } else if (fieldType.equals(Byte.class) || fieldType.equals(byte.class)) {
+                return Byte.parseByte(value);
+            } else if (fieldType.equals(Boolean.class) || fieldType.equals(boolean.class)) {
+                return Boolean.parseBoolean(value);
             }
         } catch (NumberFormatException e) {
             throw new BadRequestException(ErrorMessage.INVALID_NUMBER_FORMAT);

@@ -31,7 +31,7 @@ public class BookDetailForReaderResponseDto {
 
     private final String summary;
 
-    private final String publishingYear;
+    private final Integer publishingYear;
 
     private final BaseEntityDto publisher;
 

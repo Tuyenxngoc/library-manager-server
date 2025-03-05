@@ -32,7 +32,7 @@ public class BookDefinition {//Biên mục
     private String bookCode; // Kí hiệu tên sách
 
     @Column(name = "publishing_year")
-    private String publishingYear; // Năm xuất bản
+    private Integer publishingYear; // Năm xuất bản
 
     @Column(name = "price")
     private Double price; // Giá bán

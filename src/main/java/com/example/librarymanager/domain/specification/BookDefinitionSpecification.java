@@ -1,6 +1,7 @@
 package com.example.librarymanager.domain.specification;
 
 import com.example.librarymanager.constant.ErrorMessage;
+import com.example.librarymanager.constant.QueryOperator;
 import com.example.librarymanager.domain.dto.filter.BookDefinitionFilter;
 import com.example.librarymanager.domain.dto.filter.QueryFilter;
 import com.example.librarymanager.domain.entity.*;
@@ -10,10 +11,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.example.librarymanager.util.SpecificationsUtil.castToRequiredType;
 
 public class BookDefinitionSpecification {
+
+    private static final Map<String, List<QueryOperator>> ALLOWED_FIELDS = Map.of(
+            "title", List.of(QueryOperator.LIKE, QueryOperator.EQUALS),
+            "author", List.of(QueryOperator.LIKE, QueryOperator.EQUALS, QueryOperator.IN),
+            "publisher", List.of(QueryOperator.LIKE, QueryOperator.EQUALS, QueryOperator.IN),
+            "publishingYear", List.of(QueryOperator.EQUALS, QueryOperator.GREATER_THAN, QueryOperator.LESS_THAN)
+    );
 
     public static Specification<BookDefinition> baseFilterBookDefinitions(String keyword, String searchBy, Boolean activeFlag) {
         return (root, query, builder) -> {
@@ -104,50 +113,55 @@ public class BookDefinitionSpecification {
         };
     }
 
-    private static void validateField(String fieldName) {
-        try {
-            BookDefinition.class.getDeclaredField(fieldName);
-        } catch (NoSuchFieldException e) {
+    private static void validateField(String fieldName, QueryOperator operator) {
+        if (!ALLOWED_FIELDS.containsKey(fieldName)) {
             throw new BadRequestException(ErrorMessage.BookDefinition.ERR_INVALID_FIELD, fieldName);
+        }
+
+        if (!ALLOWED_FIELDS.get(fieldName).contains(operator)) {
+            throw new BadRequestException(ErrorMessage.INVALID_OPERATOR_NOT_SUPPORTED, operator, fieldName);
         }
     }
 
     public static Specification<BookDefinition> createSpecification(QueryFilter input) {
-        validateField(input.getField());
+        return (root, query, criteriaBuilder) -> {
+            String fieldName = input.getField();
+            QueryOperator operator = input.getOperator();
+            validateField(fieldName, operator);
 
-        return switch (input.getOperator()) {
+            Path<?> path = null;
 
-            case EQUALS -> (root, query, criteriaBuilder) ->
-                    criteriaBuilder.equal(root.get(input.getField()),
-                            castToRequiredType(root.get(input.getField()).getJavaType(),
-                                    input.getValue()));
+            if ("author".equalsIgnoreCase(fieldName)) {
+                Join<BookDefinition, BookAuthor> bookAuthorJoin = root.join(BookDefinition_.bookAuthors, JoinType.LEFT);
+                Join<BookAuthor, Author> authorJoin = bookAuthorJoin.join(BookAuthor_.author, JoinType.LEFT);
+                path = authorJoin.get(Author_.fullName);
+            }
 
-            case NOT_EQUALS -> (root, query, criteriaBuilder) ->
-                    criteriaBuilder.notEqual(root.get(input.getField()),
-                            castToRequiredType(root.get(input.getField()).getJavaType(),
-                                    input.getValue()));
+            if ("publisher".equalsIgnoreCase(fieldName)) {
+                Join<BookDefinition, Publisher> publisherJoin = root.join(BookDefinition_.publisher, JoinType.LEFT);
+                path = publisherJoin.get(Publisher_.name);
+            }
 
-            case GREATER_THAN -> (root, query, criteriaBuilder) ->
-                    criteriaBuilder.gt(root.get(input.getField()),
-                            (Number) castToRequiredType(
-                                    root.get(input.getField()).getJavaType(),
-                                    input.getValue()));
+            if (path == null) {
+                path = root.get(fieldName);
+            }
 
-            case LESS_THAN -> (root, query, criteriaBuilder) ->
-                    criteriaBuilder.lt(root.get(input.getField()),
-                            (Number) castToRequiredType(
-                                    root.get(input.getField()).getJavaType(),
-                                    input.getValue()));
+            return switch (operator) {
+                case EQUALS -> criteriaBuilder.equal(path, castToRequiredType(path.getJavaType(), input.getValue()));
 
-            case LIKE -> (root, query, criteriaBuilder) ->
-                    criteriaBuilder.like(root.get(input.getField()),
-                            "%" + input.getValue() + "%");
+                case NOT_EQUALS ->
+                        criteriaBuilder.notEqual(path, castToRequiredType(path.getJavaType(), input.getValue()));
 
-            case IN -> (root, query, criteriaBuilder) ->
-                    criteriaBuilder.in(root.get(input.getField()))
-                            .value(castToRequiredType(
-                                    root.get(input.getField()).getJavaType(),
-                                    input.getValues()));
+                case GREATER_THAN ->
+                        criteriaBuilder.gt(path.as(Number.class), (Number) castToRequiredType(path.getJavaType(), input.getValue()));
+
+                case LESS_THAN ->
+                        criteriaBuilder.lt(path.as(Number.class), (Number) castToRequiredType(path.getJavaType(), input.getValue()));
+
+                case LIKE -> criteriaBuilder.like(path.as(String.class), "%" + input.getValue() + "%");
+
+                case IN -> path.in(castToRequiredType(path.getJavaType(), input.getValues()));
+            };
         };
     }
 
@@ -179,7 +193,7 @@ public class BookDefinitionSpecification {
             Predicate predicate = builder.conjunction();
 
             if (filters.getBookCode() != null && StringUtils.isNotBlank(filters.getBookCode())) {
-                Join<BookDefinition, Book> bookJoin = root.join(BookDefinition_.books, jakarta.persistence.criteria.JoinType.LEFT);
+                Join<BookDefinition, Book> bookJoin = root.join(BookDefinition_.books, JoinType.LEFT);
                 predicate = builder.and(predicate, builder.equal(bookJoin.get(Book_.bookCode), filters.getBookCode()));
             }
 
@@ -191,13 +205,13 @@ public class BookDefinitionSpecification {
                 predicate = builder.and(predicate, builder.like(root.get(BookDefinition_.keywords), "%" + filters.getKeyword() + "%"));
             }
 
-            if (filters.getPublishingYear() != null && StringUtils.isNotBlank(filters.getPublishingYear())) {
-                predicate = builder.and(predicate, builder.like(root.get(BookDefinition_.publishingYear), "%" + filters.getPublishingYear() + "%"));
+            if (filters.getPublishingYear() != null) {
+                predicate = builder.and(predicate, builder.equal(root.get(BookDefinition_.publishingYear), filters.getPublishingYear()));
             }
 
             if (filters.getAuthor() != null && StringUtils.isNotBlank(filters.getAuthor())) {
-                Join<BookDefinition, BookAuthor> bookAuthorJoin = root.join(BookDefinition_.bookAuthors, jakarta.persistence.criteria.JoinType.LEFT);
-                Join<BookAuthor, Author> authorJoin = bookAuthorJoin.join(BookAuthor_.author, jakarta.persistence.criteria.JoinType.LEFT);
+                Join<BookDefinition, BookAuthor> bookAuthorJoin = root.join(BookDefinition_.bookAuthors, JoinType.LEFT);
+                Join<BookAuthor, Author> authorJoin = bookAuthorJoin.join(BookAuthor_.author, JoinType.LEFT);
 
                 predicate = builder.and(predicate, builder.like(authorJoin.get(Author_.fullName), "%" + filters.getAuthor() + "%"));
             }
