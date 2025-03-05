@@ -18,7 +18,7 @@ import com.example.librarymanager.domain.dto.response.bookdefinition.BookDetailF
 import com.example.librarymanager.domain.dto.response.bookdefinition.BookForReaderResponseDto;
 import com.example.librarymanager.domain.entity.*;
 import com.example.librarymanager.domain.mapper.BookDefinitionMapper;
-import com.example.librarymanager.domain.specification.BookSpecification;
+import com.example.librarymanager.domain.specification.BookDefinitionSpecification;
 import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.NotFoundException;
 import com.example.librarymanager.repository.*;
@@ -450,7 +450,7 @@ public class BookDefinitionServiceImpl implements BookDefinitionService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.BOOK_DEFINITION);
 
         Specification<BookDefinition> spec = filterByBooksCountGreaterThanZero()
-                .and(BookSpecification.getSpecificationFromFilters(queryFilters));
+                .and(BookDefinitionSpecification.getSpecificationFromFilters(queryFilters));
 
         Page<BookDefinition> page = bookDefinitionRepository.findAll(spec, pageable);
 
@@ -472,7 +472,7 @@ public class BookDefinitionServiceImpl implements BookDefinitionService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.BOOK_DEFINITION);
 
         Specification<BookDefinition> spec = filterByBooksCountGreaterThanZero()
-                .and(BookSpecification.filterBooks(filters));
+                .and(BookDefinitionSpecification.filterBookDefinitions(filters));
 
         Page<BookDefinition> page = bookDefinitionRepository.findAll(spec, pageable);
 
