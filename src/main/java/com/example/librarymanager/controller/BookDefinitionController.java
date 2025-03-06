@@ -11,6 +11,7 @@ import com.example.librarymanager.domain.dto.pagination.PaginationSortRequestDto
 import com.example.librarymanager.domain.dto.request.BookDefinitionRequestDto;
 import com.example.librarymanager.security.CustomUserDetails;
 import com.example.librarymanager.service.BookDefinitionService;
+import com.example.librarymanager.service.RecommendationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,6 +38,8 @@ import java.util.Set;
 public class BookDefinitionController {
 
     BookDefinitionService bookDefinitionService;
+
+    RecommendationService recommendationService;
 
     @Operation(summary = "API Create Book Definition")
     @PreAuthorize("hasRole('ROLE_MANAGE_BOOK_DEFINITION')")
@@ -148,6 +151,15 @@ public class BookDefinitionController {
             @ParameterObject PaginationSortRequestDto requestDto
     ) {
         return VsResponseUtil.success(bookDefinitionService.searchBooks(filters, requestDto));
+    }
+
+    @Operation(summary = "API Recommend Books for User")
+    @GetMapping(UrlConstant.BookDefinition.RECOMMEND)
+    public ResponseEntity<?> recommendBooks(
+            @CurrentUser CustomUserDetails userDetails,
+            @RequestParam(value = "topN", defaultValue = "5") int topN
+    ) {
+        return VsResponseUtil.success(recommendationService.recommendBooks(userDetails.getCardNumber(), topN));
     }
 
     @Operation(summary = "API Get Book PDF")

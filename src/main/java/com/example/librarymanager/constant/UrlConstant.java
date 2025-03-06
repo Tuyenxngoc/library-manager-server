@@ -145,6 +145,7 @@ public class UrlConstant {
         public static final String GET_BOOK_DETAIL_FOR_USER = PRE_FIX + "/books/{id}";
         public static final String ADVANCED_SEARCH = PRE_FIX + "/advanced-search";
         public static final String SEARCH = PRE_FIX + "/search";
+        public static final String RECOMMEND = PRE_FIX + "/recommend";
 
         public static final String BOOK_PDF = PRE_FIX + "/pdf";
         public static final String BOOK_LABEL_TYPE_1_PDF = PRE_FIX + "/pdf/label-type-1";

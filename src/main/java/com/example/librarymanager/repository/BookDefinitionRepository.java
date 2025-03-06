@@ -18,8 +18,16 @@ public interface BookDefinitionRepository extends JpaRepository<BookDefinition, 
 
     Optional<BookDefinition> findByIdAndActiveFlagIsTrue(Long id);
 
-    @Query("SELECT new com.example.librarymanager.domain.dto.response.bookdefinition.BookDefinitionResponseDto(b) " +
-            "FROM BookDefinition b " +
-            "WHERE b.id IN :ids")
+    @Query("SELECT DISTINCT bd.id FROM BookDefinition bd JOIN Book b ON b.bookDefinition = bd")
+    List<Long> findAllBookDefinitionIdsWithBook();
+
+    @Query("""
+            SELECT new com.example.librarymanager.domain.dto.response.bookdefinition.BookDefinitionResponseDto(b) 
+                        FROM BookDefinition b 
+                        WHERE b.id IN :ids
+            """)
     List<BookDefinitionResponseDto> findBookDefinitionsByIds(@Param("ids") Set<Long> ids);
+
+    List<BookDefinition> findByIdIn(List<Long> ids);
+
 }
