@@ -73,13 +73,13 @@ public class BookDefinitionSpecification {
 
     public static Specification<BookDefinition> filterByBooksCountGreaterThanZero() {
         return (root, query, builder) -> {
-            Join<BookDefinition, Book> bookJoin = root.join(BookDefinition_.books, JoinType.LEFT);
+            Subquery<Long> subquery = query.subquery(Long.class);
+            Root<Book> bookRoot = subquery.from(Book.class);
+            subquery.select(builder.literal(1L));
 
-            query.groupBy(root.get(BookDefinition_.id));
+            subquery.where(builder.equal(bookRoot.get(Book_.bookDefinition), root));
 
-            query.having(builder.greaterThan(builder.count(bookJoin), 0L));
-
-            return builder.conjunction();
+            return builder.exists(subquery);
         };
     }
 
