@@ -1,9 +1,11 @@
 package com.example.librarymanager.domain.dto.response.borrowreceipt;
 
+import com.example.librarymanager.domain.dto.response.BookBorrowDto;
 import com.example.librarymanager.domain.entity.BorrowReceipt;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 public class BorrowReceiptForReaderResponseDto {
@@ -19,7 +21,7 @@ public class BorrowReceiptForReaderResponseDto {
 
     private final String note; // Ghi chú
 
-    private final int books;//Số sách mượn
+    private final List<BookBorrowDto> books;//Số sách mượn
 
     public BorrowReceiptForReaderResponseDto(BorrowReceipt borrowReceipt) {
         this.id = borrowReceipt.getId();
@@ -28,7 +30,9 @@ public class BorrowReceiptForReaderResponseDto {
         this.dueDate = borrowReceipt.getDueDate();
         this.status = borrowReceipt.getStatus().getName();
         this.note = borrowReceipt.getNote();
-        this.books = borrowReceipt.getBookBorrows().size();
+        this.books = borrowReceipt.getBookBorrows().stream()
+                .map(BookBorrowDto::new)
+                .toList();
     }
 
 }
