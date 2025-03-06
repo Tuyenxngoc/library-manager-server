@@ -153,7 +153,8 @@ public class BookDefinitionController {
         return VsResponseUtil.success(bookDefinitionService.searchBooks(filters, requestDto));
     }
 
-    @Operation(summary = "API Recommend Books for User")
+    @Operation(summary = "API Recommend Books")
+    @PreAuthorize("hasRole('ROLE_READER')")
     @GetMapping(UrlConstant.BookDefinition.RECOMMEND)
     public ResponseEntity<?> recommendBooks(
             @CurrentUser CustomUserDetails userDetails,
