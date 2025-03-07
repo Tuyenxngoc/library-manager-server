@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,8 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class BookReturnReminderScheduler {
 
+    private static final int maxOverdueDays = 3;
+
     private final SendMailUtil sendMailUtil;
 
     private final BorrowReceiptRepository borrowReceiptRepository;
@@ -28,7 +31,8 @@ public class BookReturnReminderScheduler {
     @Scheduled(cron = "0 0 8 * * ?") // Chạy lúc 8:00 AM mỗi ngày
     @Transactional
     public void sendReminderEmails() {
-        List<BorrowReceipt> overdueRecords = borrowReceiptRepository.findRecordsByReturnDate();
+        LocalDate overdueThreshold = LocalDate.now().minusDays(maxOverdueDays);
+        List<BorrowReceipt> overdueRecords = borrowReceiptRepository.findOverdueRecords(overdueThreshold);
 
         for (BorrowReceipt record : overdueRecords) {
 

@@ -413,7 +413,7 @@ public class BorrowReceiptServiceImpl implements BorrowReceiptService {
 
     @Override
     public byte[] createOverdueListPdf() {
-        List<BorrowReceipt> borrowReceipts = borrowReceiptRepository.findRecordsByReturnDate();
+        List<BorrowReceipt> borrowReceipts = borrowReceiptRepository.findAllOverdueRecords();
         if (borrowReceipts.isEmpty()) {
             throw new BadRequestException(ErrorMessage.BorrowReceipt.ERR_NOT_FOUND_OVERDUE);
         }

@@ -5,9 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -27,7 +29,10 @@ public interface BorrowReceiptRepository extends JpaRepository<BorrowReceipt, Lo
     int countOverdue();
 
     @Query("SELECT br FROM BorrowReceipt br WHERE br.dueDate < CURRENT_DATE AND br.status != 'RETURNED'")
-    List<BorrowReceipt> findRecordsByReturnDate();
+    List<BorrowReceipt> findAllOverdueRecords();
+
+    @Query("SELECT br FROM BorrowReceipt br WHERE br.dueDate < CURRENT_DATE AND br.dueDate >= :daysAgo AND br.status != 'RETURNED'")
+    List<BorrowReceipt> findOverdueRecords(@Param("daysAgo") LocalDate daysAgo);
 
     @Modifying
     @Transactional
