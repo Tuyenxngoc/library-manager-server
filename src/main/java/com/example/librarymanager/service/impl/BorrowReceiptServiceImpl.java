@@ -255,8 +255,16 @@ public class BorrowReceiptServiceImpl implements BorrowReceiptService {
     }
 
     @Override
+    @Transactional
     public CommonResponseDto delete(Long id, String userId) {
         BorrowReceipt borrowReceipt = getEntity(id);
+
+        List<Book> booksToUpdate = borrowReceipt.getBookBorrows().stream()
+                .map(BookBorrow::getBook)
+                .peek(book -> book.setBookCondition(BookCondition.AVAILABLE))
+                .toList();
+
+        bookRepository.saveAll(booksToUpdate);
 
         borrowReceiptRepository.delete(borrowReceipt);
 
