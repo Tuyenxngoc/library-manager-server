@@ -70,6 +70,12 @@ public class BookBorrowSpecification {
                         Join<BorrowReceipt, Reader> readerJoin = borrowReceiptJoin.join(BorrowReceipt_.reader);
                         predicate = builder.and(predicate, builder.like(readerJoin.get(Reader_.cardNumber), "%" + keyword + "%"));
                     }
+
+                    case BookDefinition_.TITLE -> {
+                        Join<BookBorrow, Book> bookJoin = root.join(BookBorrow_.book);
+                        Join<Book, BookDefinition> bookBookDefinitionJoin = bookJoin.join(Book_.bookDefinition);
+                        predicate = builder.and(predicate, builder.like(bookBookDefinitionJoin.get(BookDefinition_.title), "%" + keyword + "%"));
+                    }
                 }
             }
 
