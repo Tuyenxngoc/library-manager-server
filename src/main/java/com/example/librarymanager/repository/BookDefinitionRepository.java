@@ -1,6 +1,7 @@
 package com.example.librarymanager.repository;
 
 import com.example.librarymanager.domain.dto.response.bookdefinition.BookDefinitionResponseDto;
+import com.example.librarymanager.domain.dto.response.bookdefinition.BookForReaderResponseDto;
 import com.example.librarymanager.domain.entity.BookDefinition;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -19,7 +20,7 @@ public interface BookDefinitionRepository extends JpaRepository<BookDefinition, 
     Optional<BookDefinition> findByIdAndActiveFlagIsTrue(Long id);
 
     @Query("SELECT DISTINCT bd.id FROM BookDefinition bd JOIN Book b ON b.bookDefinition = bd")
-    List<Long> findAllBookDefinitionIdsWithBook();
+    Set<Long> findAllBookDefinitionIdsWithBook();
 
     @Query("""
             SELECT new com.example.librarymanager.domain.dto.response.bookdefinition.BookDefinitionResponseDto(b) 
@@ -28,6 +29,7 @@ public interface BookDefinitionRepository extends JpaRepository<BookDefinition, 
             """)
     List<BookDefinitionResponseDto> findBookDefinitionsByIds(@Param("ids") Set<Long> ids);
 
-    List<BookDefinition> findByIdIn(List<Long> ids);
+    @Query("SELECT new com.example.librarymanager.domain.dto.response.bookdefinition.BookForReaderResponseDto(bd) FROM BookDefinition bd WHERE bd.id IN :ids")
+    List<BookForReaderResponseDto> findByIdIn(@Param("ids") List<Long> ids);
 
 }

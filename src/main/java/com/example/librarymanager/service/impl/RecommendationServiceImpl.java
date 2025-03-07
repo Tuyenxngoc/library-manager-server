@@ -8,7 +8,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -20,29 +23,42 @@ public class RecommendationServiceImpl implements RecommendationService {
 
     private final BookBorrowRepository bookBorrowRepository;
 
+    private List<BookForReaderResponseDto> mapIdsToBooks(List<Long> bookIds) {
+        List<BookForReaderResponseDto> books = bookDefinitionRepository.findByIdIn(bookIds);
+
+        Map<Long, BookForReaderResponseDto> bookMap = books.stream()
+                .collect(Collectors.toMap(BookForReaderResponseDto::getId, book -> book));
+
+        return bookIds.stream()
+                .map(bookMap::get)
+                .toList();
+    }
+
     /**
-     * Calculates the Jaccard similarity coefficient between two books based on the readers who have borrowed them.
-     * <p>
-     * The Jaccard similarity is defined as the size of the intersection divided by the size of the union of two sets.
-     * In this case, the sets are the readers who have borrowed each book.
+     * Calculates the Jaccard similarity coefficient between two sets of users.
+     * The Jaccard similarity is defined as the size of the intersection divided by the size of the union of the two sets.
      *
-     * @param bookA The ID of the first book to compare.
-     * @param bookB The ID of the second book to compare.
-     * @return A double value between 0 and 1, where 0 indicates no similarity (no common readers)
-     * and 1 indicates identical reader sets. If neither book has been borrowed by any readers,
-     * the method returns 0.
+     * @param usersA The first set of user IDs
+     * @param usersB The second set of user IDs
+     * @return A double value between 0 and 1, where 0 indicates no similarity and 1 indicates identical sets.
+     * Returns 0 if both sets are empty.
      */
-    private double jaccardSimilarity(Long bookA, Long bookB) {
-        Set<Long> usersA = bookBorrowRepository.getReadersBorrowed(bookA);
-        Set<Long> usersB = bookBorrowRepository.getReadersBorrowed(bookB);
+    private double jaccardSimilarity(Set<Long> usersA, Set<Long> usersB) {
+        if (usersA.isEmpty() || usersB.isEmpty()) return 0.0;
 
-        Set<Long> intersection = new HashSet<>(usersA);
-        intersection.retainAll(usersB);// Giao của hai tập người dùng
+        Set<Long> smaller = (usersA.size() < usersB.size()) ? usersA : usersB;
+        Set<Long> larger = (usersA.size() < usersB.size()) ? usersB : usersA;
 
-        Set<Long> union = new HashSet<>(usersA);
-        union.addAll(usersB); // Hợp của hai tập người dùng
+        int intersectionSize = 0;
+        for (Long user : smaller) {
+            if (larger.contains(user)) {
+                intersectionSize++;
+            }
+        }
 
-        return union.isEmpty() ? 0.0 : (double) intersection.size() / union.size();
+        int unionSize = usersA.size() + usersB.size() - intersectionSize;
+
+        return (double) intersectionSize / unionSize;
     }
 
     /**
@@ -61,26 +77,25 @@ public class RecommendationServiceImpl implements RecommendationService {
      */
     @Override
     public List<BookForReaderResponseDto> recommendBooks(String cardNumber, int topN) {
-        if (cardNumber == null || cardNumber.isEmpty()) {
-            return Collections.emptyList();
-        }
+        // Lấy danh sách sách đã mượn
+        Set<Long> borrowedBooks = bookBorrowRepository.getBorrowedBookDefinitionIds(cardNumber);
+        Set<Long> allBooks = bookDefinitionRepository.findAllBookDefinitionIdsWithBook();
 
-        Set<Long> borrowedBooks = bookBorrowRepository.getBorrowedBookDefinitions(cardNumber);
-        List<Long> allBooks = bookDefinitionRepository.findAllBookDefinitionIdsWithBook();
+        // Tiền xử lý: Lấy danh sách người dùng đã mượn từng cuốn sách
+        Map<Long, Set<Long>> bookReadersMap = allBooks.stream()
+                .collect(Collectors.toMap(book -> book, bookBorrowRepository::getReadersBorrowed));
 
         Map<Long, Double> similarityScores = new HashMap<>();
 
         for (Long book : allBooks) {
             if (!borrowedBooks.contains(book)) {
                 double similarity = borrowedBooks.stream()
-                        .mapToDouble(b -> jaccardSimilarity(b, book))
+                        .mapToDouble(b -> jaccardSimilarity(bookReadersMap.get(b), bookReadersMap.get(book)))
                         .average()
                         .orElse(0.0);
                 similarityScores.put(book, similarity);
             }
         }
-
-        log.debug("similarity scores: {}", similarityScores);
 
         List<Long> recommendedBookIds = similarityScores.entrySet().stream()
                 .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))
@@ -88,18 +103,10 @@ public class RecommendationServiceImpl implements RecommendationService {
                 .map(Map.Entry::getKey)
                 .toList();
 
+        log.debug("similarity scores: {}", similarityScores);
         log.debug("recommended books: {}", recommendedBookIds);
 
-        List<BookForReaderResponseDto> books = bookDefinitionRepository.findByIdIn(recommendedBookIds).stream()
-                .map(BookForReaderResponseDto::new)
-                .toList();
-
-        Map<Long, BookForReaderResponseDto> bookMap = books.stream()
-                .collect(Collectors.toMap(BookForReaderResponseDto::getId, book -> book));
-
-        return recommendedBookIds.stream()
-                .map(bookMap::get)
-                .toList();
+        return mapIdsToBooks(recommendedBookIds);
     }
 
 }

@@ -41,6 +41,6 @@ public interface BookBorrowRepository extends JpaRepository<BookBorrow, Long>, J
                 JOIN bb.book b
                 WHERE br.reader.cardNumber = :cardNumber
             """)
-    Set<Long> getBorrowedBookDefinitions(@Param("cardNumber") String cardNumber);
+    Set<Long> getBorrowedBookDefinitionIds(@Param("cardNumber") String cardNumber);
 
 }
