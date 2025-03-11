@@ -2,19 +2,16 @@ package com.example.librarymanager.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "book_definitions",
         uniqueConstraints = @UniqueConstraint(name = "UN_BOOK_DEFINITIONS_BOOK_CODE", columnNames = "book_code"))
@@ -23,6 +20,7 @@ public class BookDefinition {//Biên mục
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_definition_id")
+    @EqualsAndHashCode.Include
     private Long id;  // Mã biên mục
 
     @Column(name = "title", nullable = false)
@@ -114,16 +112,4 @@ public class BookDefinition {//Biên mục
     @JsonIgnore
     private List<BookAuthor> bookAuthors = new ArrayList<>();  // Tác giả
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BookDefinition that = (BookDefinition) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
 }

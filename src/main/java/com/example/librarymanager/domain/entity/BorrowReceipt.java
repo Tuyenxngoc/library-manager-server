@@ -8,13 +8,13 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "borrow_receipts",
         uniqueConstraints = @UniqueConstraint(name = "UN_BORROW_RECEIPTS_RECEIPT_NUMBER", columnNames = "receipt_number"))
@@ -23,6 +23,7 @@ public class BorrowReceipt {//Phiếu mượn sách
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "borrow_receipt_id")
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "receipt_number", nullable = false)
@@ -50,16 +51,4 @@ public class BorrowReceipt {//Phiếu mượn sách
     @JsonIgnore
     private List<BookBorrow> bookBorrows = new ArrayList<>();//Các sách mượn
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BorrowReceipt that = (BorrowReceipt) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
 }
