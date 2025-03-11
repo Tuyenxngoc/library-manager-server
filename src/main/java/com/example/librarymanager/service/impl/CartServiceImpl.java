@@ -37,21 +37,15 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
+    private final CartRepository cartRepository;
+    private final CartDetailRepository cartDetailRepository;
+    private final ReaderRepository readerRepository;
+    private final BookDefinitionRepository bookDefinitionRepository;
+    private final MessageSource messageSource;
     @Value("${cartDetail.borrowTimeHours}")
     private int borrowTimeHours;
-
     @Value("${cartDetail.maxBooks}")
     private int maxBooksInCart;
-
-    private final CartRepository cartRepository;
-
-    private final CartDetailRepository cartDetailRepository;
-
-    private final ReaderRepository readerRepository;
-
-    private final BookDefinitionRepository bookDefinitionRepository;
-
-    private final MessageSource messageSource;
 
     private Cart getEntity(String cardNumber) {
         return cartRepository.findByReaderCardNumber(cardNumber).orElseGet(() -> {

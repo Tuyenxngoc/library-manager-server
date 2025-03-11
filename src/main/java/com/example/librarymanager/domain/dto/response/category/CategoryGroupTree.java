@@ -10,25 +10,9 @@ import java.util.List;
 @AllArgsConstructor
 public class CategoryGroupTree {
 
-    @Getter
-    private static class Category {
-        private final long id;
-        private final String name;
-        private final int count;
-
-        public Category(com.example.librarymanager.domain.entity.Category category) {
-            this.id = category.getId();
-            this.name = category.getCategoryName();
-            this.count = category.getBookDefinitions().size();
-        }
-    }
-
     private final long id;
-
     private final String name;
-
     private final int count;
-
     private final List<Category> categories;
 
     public CategoryGroupTree(CategoryGroup categoryGroup) {
@@ -41,5 +25,18 @@ public class CategoryGroupTree {
         this.count = categories.stream()
                 .mapToInt(Category::getCount)
                 .sum();
+    }
+
+    @Getter
+    private static class Category {
+        private final long id;
+        private final String name;
+        private final int count;
+
+        public Category(com.example.librarymanager.domain.entity.Category category) {
+            this.id = category.getId();
+            this.name = category.getCategoryName();
+            this.count = category.getBookDefinitions().size();
+        }
     }
 }

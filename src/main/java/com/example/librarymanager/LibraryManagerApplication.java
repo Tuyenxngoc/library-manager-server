@@ -27,51 +27,33 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class LibraryManagerApplication {
 
+    private final RoleService roleService;
+    private final UserGroupService userGroupService;
+    private final UserService userService;
+    private final ReaderService readerService;
+    private final AuthorService authorService;
+    private final BookSetService bookSetService;
+    private final BookDefinitionService bookDefinitionService;
+    private final CategoryGroupService categoryGroupService;
+    private final CategoryService categoryService;
+    private final PublisherService publisherService;
+    private final ClassificationSymbolService classificationSymbolService;
     @Value("${data.authors.csv}")
     private String authorsCsvPath;
-
     @Value("${data.booksets.csv}")
     private String bookSetsCsvPath;
-
     @Value("${data.bookDefinitions.csv}")
     private String bookDefinitionsCsvPath;
-
     @Value("${data.categorygroups.csv}")
     private String categoryGroupsCsvPath;
-
     @Value("${data.categories.csv}")
     private String categoriesCsvPath;
-
     @Value("${data.classificationsymbols.csv}")
     private String classificationSymbolsCsvPath;
-
     @Value("${data.publishers.csv}")
     private String publishersCsvPath;
-
     @Value("${data.readers.csv}")
     private String readersCsvPath;
-
-    private final RoleService roleService;
-
-    private final UserGroupService userGroupService;
-
-    private final UserService userService;
-
-    private final ReaderService readerService;
-
-    private final AuthorService authorService;
-
-    private final BookSetService bookSetService;
-
-    private final BookDefinitionService bookDefinitionService;
-
-    private final CategoryGroupService categoryGroupService;
-
-    private final CategoryService categoryService;
-
-    private final PublisherService publisherService;
-
-    private final ClassificationSymbolService classificationSymbolService;
 
     public static void main(String[] args) {
         Environment env = SpringApplication.run(LibraryManagerApplication.class, args).getEnvironment();

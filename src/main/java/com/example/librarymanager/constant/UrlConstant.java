@@ -8,14 +8,13 @@ public class UrlConstant {
         private static final String PRE_FIX = "/auth";
 
         public static final String LOGIN = PRE_FIX + "/login";
+        public static final String ADMIN_LOGIN = ADMIN_URL + LOGIN;
         public static final String LOGOUT = PRE_FIX + "/logout";
         public static final String FORGET_PASSWORD = PRE_FIX + "/forget-password";
-        public static final String CHANGE_PASSWORD = PRE_FIX + "/change-password";
-        public static final String REFRESH_TOKEN = PRE_FIX + "/refresh-token";
-
-        public static final String ADMIN_LOGIN = ADMIN_URL + LOGIN;
         public static final String ADMIN_FORGET_PASSWORD = ADMIN_URL + FORGET_PASSWORD;
+        public static final String CHANGE_PASSWORD = PRE_FIX + "/change-password";
         public static final String ADMIN_CHANGE_PASSWORD = ADMIN_URL + CHANGE_PASSWORD;
+        public static final String REFRESH_TOKEN = PRE_FIX + "/refresh-token";
     }
 
     public static class User {

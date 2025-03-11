@@ -16,20 +16,13 @@ public class BookByBookDefinitionResponseDto {
     private final String bookCode;
 
     private final Integer publishingYear;
-
-    private long totalBooks; // Tổng số sách
-
-    private long availableBooks; // Số sách đang trong thư viện
-
-    private long borrowedBooks; // Số sách đang mượn
-
-    private long lostBooks; // Số sách đã mất
-
     private final BaseEntityDto classificationSymbol;
-
     private final List<BaseEntityDto> authors = new ArrayList<>();
-
     private final BaseEntityDto publisher;
+    private long totalBooks; // Tổng số sách
+    private long availableBooks; // Số sách đang trong thư viện
+    private long borrowedBooks; // Số sách đang mượn
+    private long lostBooks; // Số sách đã mất
 
     public BookByBookDefinitionResponseDto(BookDefinition bookDefinition) {
         this.id = bookDefinition.getId();
