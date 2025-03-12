@@ -9,15 +9,16 @@ import com.example.librarymanager.domain.dto.response.cart.CartDetailResponseDto
 import java.util.List;
 import java.util.Set;
 
-public interface CartService {
+public interface CartDetailService {
 
-    List<CartDetailResponseDto> getCartDetails(String cardNumber, String title, String type);
+    List<CartDetailResponseDto> getCartDetails(String cardNumber);
 
-    CommonResponseDto addToCart(String cardNumber, Long bookId);
+    CommonResponseDto addToCart(String cardNumber, String bookCode);
 
     CommonResponseDto removeFromCart(String cardNumber, Set<Long> cartDetailIds);
 
     CommonResponseDto clearCart(String cardNumber);
 
     PaginationResponseDto<BorrowRequestSummaryResponseDto> getPendingBorrowRequests(PaginationFullRequestDto requestDto);
+    
 }
