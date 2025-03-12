@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface BookService {
+
     CommonResponseDto updateStatus(Long id, BookStatus status, String userId);
 
     PaginationResponseDto<BookResponseDto> findAll(PaginationFullRequestDto requestDto, BookCondition bookCondition);

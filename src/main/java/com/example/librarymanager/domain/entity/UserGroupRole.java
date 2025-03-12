@@ -38,4 +38,9 @@ public class UserGroupRole {
         this.role = role;
         this.userGroup = userGroup;
     }
+
+    public UserGroupRole(Role role) {
+        this.role = role;
+    }
+
 }

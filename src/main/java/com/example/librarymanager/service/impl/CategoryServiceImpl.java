@@ -54,7 +54,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryGroupRepository categoryGroupRepository;
 
     @Override
-    public void initCategoriesFromCsv(String categoriesCsvPath) {
+    public void init(String categoriesCsvPath) {
         if (categoryRepository.count() > 0) {
             return;
         }

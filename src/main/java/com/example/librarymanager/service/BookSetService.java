@@ -8,7 +8,7 @@ import com.example.librarymanager.domain.dto.response.bookset.BookSetResponseDto
 import com.example.librarymanager.domain.entity.BookSet;
 
 public interface BookSetService {
-    void initBookSetsFromCSv(String bookSetsCsvPath);
+    void init(String bookSetsCsvPath);
 
     CommonResponseDto save(BookSetRequestDto requestDto, String userId);
 

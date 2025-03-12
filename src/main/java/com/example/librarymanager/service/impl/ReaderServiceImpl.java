@@ -92,10 +92,11 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
-    public void initReadersFromCsv(String readersCsvPath) {
+    public void init(String readersCsvPath) {
         if (readerRepository.count() > 0) {
             return;
         }
+
         try (BufferedReader br = new BufferedReader(new FileReader(readersCsvPath))) {
             String line;
             br.readLine();

@@ -10,11 +10,8 @@ import java.util.List;
 @Getter
 public class BookByBookDefinitionResponseDto {
     private final long id;
-
     private final String title;
-
-    private final String bookCode;
-
+    private final String bookNumber;
     private final Integer publishingYear;
     private final BaseEntityDto classificationSymbol;
     private final List<BaseEntityDto> authors = new ArrayList<>();
@@ -27,7 +24,7 @@ public class BookByBookDefinitionResponseDto {
     public BookByBookDefinitionResponseDto(BookDefinition bookDefinition) {
         this.id = bookDefinition.getId();
         this.title = bookDefinition.getTitle();
-        this.bookCode = bookDefinition.getBookCode();
+        this.bookNumber = bookDefinition.getBookNumber();
         this.publishingYear = bookDefinition.getPublishingYear();
         this.totalBooks = 0;
         this.availableBooks = 0;

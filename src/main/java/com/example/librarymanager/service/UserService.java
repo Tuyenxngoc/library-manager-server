@@ -1,21 +1,18 @@
 package com.example.librarymanager.service;
 
-import com.example.librarymanager.config.properties.AdminInfo;
 import com.example.librarymanager.domain.dto.common.CommonResponseDto;
 import com.example.librarymanager.domain.dto.pagination.PaginationFullRequestDto;
 import com.example.librarymanager.domain.dto.pagination.PaginationResponseDto;
 import com.example.librarymanager.domain.dto.request.UserRequestDto;
 import com.example.librarymanager.domain.dto.response.UserResponseDto;
 import com.example.librarymanager.domain.dto.response.auth.CurrentUserLoginResponseDto;
-import com.example.librarymanager.domain.entity.UserGroup;
 import com.example.librarymanager.security.CustomUserDetails;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface UserService {
-
-    void initAdmin(AdminInfo adminInfo, UserGroup userGroup);
+    void init();
 
     CurrentUserLoginResponseDto getCurrentUser(CustomUserDetails userDetails);
 

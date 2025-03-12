@@ -5,10 +5,9 @@ import com.example.librarymanager.domain.dto.pagination.PaginationFullRequestDto
 import com.example.librarymanager.domain.dto.pagination.PaginationResponseDto;
 import com.example.librarymanager.domain.dto.request.UserGroupRequestDto;
 import com.example.librarymanager.domain.dto.response.UserGroupResponseDto;
-import com.example.librarymanager.domain.entity.UserGroup;
 
 public interface UserGroupService {
-    UserGroup initUserGroup();
+    void init();
 
     CommonResponseDto save(UserGroupRequestDto requestDto, String userId);
 

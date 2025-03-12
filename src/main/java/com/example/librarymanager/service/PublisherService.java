@@ -7,7 +7,7 @@ import com.example.librarymanager.domain.dto.request.PublisherRequestDto;
 import com.example.librarymanager.domain.entity.Publisher;
 
 public interface PublisherService {
-    void initPublishersFromCsv(String publishersCsvPath);
+    void init(String publishersCsvPath);
 
     CommonResponseDto save(PublisherRequestDto requestDto);
 

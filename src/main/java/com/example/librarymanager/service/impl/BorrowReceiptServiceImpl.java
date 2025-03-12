@@ -89,13 +89,13 @@ public class BorrowReceiptServiceImpl implements BorrowReceiptService {
         }
 
         //Kiểm tra sách xem có ai khác đã đăng ký mượn từ trước hay chưa
-        LocalDateTime now = LocalDateTime.now();
-        for (CartDetail cartDetail : book.getCartDetails()) {
-            if (cartDetail.getBorrowTo().isAfter(now)
-                    && !Objects.equals(cartDetail.getCart().getReader().getId(), borrowReceipt.getReader().getId())) {
-                throw new ConflictException(ErrorMessage.Book.ERR_BOOK_RESERVED_BY_ANOTHER_READER, bookCode);
-            }
-        }
+//        LocalDateTime now = LocalDateTime.now();
+//        for (CartDetail cartDetail : book.getCartDetails()) {
+//            if (cartDetail.getBorrowTo().isAfter(now)
+//                    && !Objects.equals(cartDetail.getCart().getReader().getId(), borrowReceipt.getReader().getId())) {
+//                throw new ConflictException(ErrorMessage.Book.ERR_BOOK_RESERVED_BY_ANOTHER_READER, bookCode);
+//            }
+//        }
 
         //Cập nhật trạng thái sách là đang mượn
         book.setBookCondition(BookCondition.ON_LOAN);
@@ -140,7 +140,7 @@ public class BorrowReceiptServiceImpl implements BorrowReceiptService {
             Set<Book> booksToBorrow = borrowReceipt.getBookBorrows().stream()
                     .map(BookBorrow::getBook)
                     .collect(Collectors.toSet());
-            cartDetailRepository.deleteByCartIdAndBooks(cart.getId(), booksToBorrow, now);
+            //    cartDetailRepository.deleteByCartIdAndBooks(cart.getId(), booksToBorrow, now);
         }
 
         borrowReceiptRepository.save(borrowReceipt);
@@ -312,12 +312,12 @@ public class BorrowReceiptServiceImpl implements BorrowReceiptService {
         BorrowReceiptDetailResponseDto responseDto = new BorrowReceiptDetailResponseDto();
         responseDto.setReaderId(cart.getReader().getId());
 
-        LocalDateTime now = LocalDateTime.now();
-        for (CartDetail cartDetail : cart.getCartDetails()) {
-            if (cartDetail.getBorrowTo().isAfter(now)) {
-                responseDto.getBooks().add(cartDetail.getBook().getBookCode());
-            }
-        }
+//        LocalDateTime now = LocalDateTime.now();
+//        for (CartDetail cartDetail : cart.getCartDetails()) {
+//            if (cartDetail.getBorrowTo().isAfter(now)) {
+//                responseDto.getBooks().add(cartDetail.getBook().getBookCode());
+//            }
+//        }
 
         return responseDto;
     }

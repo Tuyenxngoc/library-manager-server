@@ -43,7 +43,7 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Override
     public BorrowStatisticsResponseDto getBorrowStatistics() {
-        int borrowRequests = cartDetailRepository.countBorrowRequests();
+        int borrowRequests = 0;
         int currentlyBorrowed = borrowReceiptRepository.countCurrentlyBorrowed();
         int dueToday = borrowReceiptRepository.countDueToday();
         int overdue = borrowReceiptRepository.countOverdue();

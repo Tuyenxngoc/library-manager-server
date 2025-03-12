@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Repository
 public interface BookDefinitionRepository extends JpaRepository<BookDefinition, Long>, JpaSpecificationExecutor<BookDefinition> {
-    boolean existsByBookCode(String bookCode);
+    boolean existsByBookNumber(String bookNumber);
 
     Optional<BookDefinition> findByIdAndActiveFlagIsTrue(Long id);
 

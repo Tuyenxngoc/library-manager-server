@@ -638,7 +638,7 @@ public class PdfServiceImpl implements PdfService {
                 khplCell.setBorder(Rectangle.BOX);
                 labelTable.addCell(khplCell);
 
-                String code = book.getBookDefinition().getBookCode();
+                String code = book.getBookDefinition().getBookNumber();
                 PdfPCell khtsCell = new PdfPCell(new Phrase(code != null && !code.isEmpty() ? code : "KHTS", boldFontMedium));
                 khtsCell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 khtsCell.setBorder(Rectangle.BOX);

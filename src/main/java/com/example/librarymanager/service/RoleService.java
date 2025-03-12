@@ -5,9 +5,7 @@ import com.example.librarymanager.domain.entity.Role;
 import java.util.List;
 
 public interface RoleService {
-
-    void initRoles();
+    void init();
 
     List<Role> getRoles();
-
 }

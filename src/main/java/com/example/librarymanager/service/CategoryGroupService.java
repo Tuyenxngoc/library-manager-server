@@ -10,7 +10,7 @@ import com.example.librarymanager.domain.entity.CategoryGroup;
 import java.util.List;
 
 public interface CategoryGroupService {
-    void initCategoryGroupsFromCsv(String categoryGroupsCsvPath);
+    void init(String categoryGroupsCsvPath);
 
     CommonResponseDto save(CategoryGroupRequestDto requestDto, String userId);
 

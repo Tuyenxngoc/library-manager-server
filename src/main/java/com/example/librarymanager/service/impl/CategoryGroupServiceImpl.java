@@ -50,7 +50,7 @@ public class CategoryGroupServiceImpl implements CategoryGroupService {
     private final MessageSource messageSource;
 
     @Override
-    public void initCategoryGroupsFromCsv(String categoryGroupsCsvPath) {
+    public void init(String categoryGroupsCsvPath) {
         if (categoryGroupRepository.count() > 0) {
             return;
         }

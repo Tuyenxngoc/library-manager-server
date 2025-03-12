@@ -26,7 +26,7 @@ public class BookDefinitionResponseDto {
 
     private final String publicationPlace;
 
-    private final String bookCode;
+    private final String bookNumber;
 
     private final Integer pageCount;
 
@@ -71,7 +71,7 @@ public class BookDefinitionResponseDto {
         this.edition = bookDefinition.getEdition();
         this.referencePrice = bookDefinition.getReferencePrice();
         this.publicationPlace = bookDefinition.getPublicationPlace();
-        this.bookCode = bookDefinition.getBookCode();
+        this.bookNumber = bookDefinition.getBookNumber();
         this.pageCount = bookDefinition.getPageCount();
         this.bookSize = bookDefinition.getBookSize();
         this.parallelTitle = bookDefinition.getParallelTitle();

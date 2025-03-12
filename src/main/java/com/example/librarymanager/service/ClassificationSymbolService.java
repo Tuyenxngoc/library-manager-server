@@ -7,7 +7,7 @@ import com.example.librarymanager.domain.dto.request.ClassificationSymbolRequest
 import com.example.librarymanager.domain.entity.ClassificationSymbol;
 
 public interface ClassificationSymbolService {
-    void initClassificationSymbolsFromCsv(String classificationSymbolsCsvPath);
+    void init(String classificationSymbolsCsvPath);
 
     CommonResponseDto save(ClassificationSymbolRequestDto requestDto);
 

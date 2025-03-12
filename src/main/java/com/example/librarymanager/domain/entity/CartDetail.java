@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @Setter
@@ -20,14 +18,6 @@ public class CartDetail {
     @Column(name = "cart_detail_id")
     private Long id;
 
-    // Đăng ký mượn từ
-    @Column(name = "borrow_from", nullable = false)
-    private LocalDateTime borrowFrom;
-
-    // Đến
-    @Column(name = "borrow_to", nullable = false)
-    private LocalDateTime borrowTo;
-
     @ManyToOne
     @JoinColumn(name = "book_id", foreignKey = @ForeignKey(name = "FK_CART_DETAIL_PRODUCT_ID"), referencedColumnName = "book_id", nullable = false)
     @JsonIgnore
@@ -37,4 +27,5 @@ public class CartDetail {
     @JoinColumn(name = "cart_id", foreignKey = @ForeignKey(name = "FK_CART_DETAIL_CART_ID"), referencedColumnName = "cart_id", nullable = false)
     @JsonIgnore
     private Cart cart;
+
 }

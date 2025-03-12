@@ -45,10 +45,11 @@ public class AuthorServiceImpl implements AuthorService {
     private final MessageSource messageSource;
 
     @Override
-    public void initAuthorsFromCsv(String authorsCsvPath) {
+    public void init(String authorsCsvPath) {
         if (authorRepository.count() > 0) {
             return;
         }
+
         try (BufferedReader br = new BufferedReader(new FileReader(authorsCsvPath))) {
             String line;
             br.readLine();

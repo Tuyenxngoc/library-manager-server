@@ -8,7 +8,7 @@ import com.example.librarymanager.domain.dto.response.category.CategoryResponseD
 import com.example.librarymanager.domain.entity.Category;
 
 public interface CategoryService {
-    void initCategoriesFromCsv(String categoriesCsvPath);
+    void init(String categoriesCsvPath);
 
     CommonResponseDto save(CategoryRequestDto requestDto, String userId);
 

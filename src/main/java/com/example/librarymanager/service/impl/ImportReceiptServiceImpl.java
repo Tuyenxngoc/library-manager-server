@@ -80,7 +80,7 @@ public class ImportReceiptServiceImpl implements ImportReceiptService {
 
             //Lặp qua số lượng tạo sách tương ứng
             for (int i = 0; i < quantity; i++) {
-                String bookCode = String.format("%s.%05d", bookDefinition.getBookCode(), currentCount + i + 1);
+                String bookCode = String.format("%s.%05d", bookDefinition.getBookNumber(), currentCount + i + 1);
 
                 // Tạo sách dựa theo biên mục
                 Book book = new Book();

@@ -7,8 +7,7 @@ import com.example.librarymanager.domain.dto.request.AuthorRequestDto;
 import com.example.librarymanager.domain.entity.Author;
 
 public interface AuthorService {
-
-    void initAuthorsFromCsv(String authorsCsvPath);
+    void init(String authorsCsvPath);
 
     CommonResponseDto save(AuthorRequestDto requestDto, String userId);
 

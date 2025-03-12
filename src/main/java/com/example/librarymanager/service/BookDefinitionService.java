@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface BookDefinitionService {
-    void initBookDefinitionsFromCsv(String bookDefinitionsCsvPath);
+    void init(String bookDefinitionsCsvPath);
 
     CommonResponseDto save(BookDefinitionRequestDto requestDto, MultipartFile image, String userId);
 

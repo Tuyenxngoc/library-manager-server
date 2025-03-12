@@ -288,7 +288,6 @@ public class UrlConstant {
         public static final String UPDATE = PRE_FIX + "/update";
         public static final String REMOVE = PRE_FIX + "/remove";
         public static final String CLEAR = PRE_FIX + "/clear";
-        public static final String PENDING_BORROW_REQUESTS = PRE_FIX + "/pending-borrow-requests";
     }
 
     public static class SystemSetting {

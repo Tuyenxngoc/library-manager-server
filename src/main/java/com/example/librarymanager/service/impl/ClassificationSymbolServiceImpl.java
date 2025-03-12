@@ -42,7 +42,7 @@ public class ClassificationSymbolServiceImpl implements ClassificationSymbolServ
     private final MessageSource messageSource;
 
     @Override
-    public void initClassificationSymbolsFromCsv(String classificationSymbolsCsvPath) {
+    public void init(String classificationSymbolsCsvPath) {
         if (classificationSymbolRepository.count() > 0) {
             return;
         }

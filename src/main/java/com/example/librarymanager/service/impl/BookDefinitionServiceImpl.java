@@ -84,7 +84,7 @@ public class BookDefinitionServiceImpl implements BookDefinitionService {
     private final SystemSettingService systemSettingService;
 
     @Override
-    public void initBookDefinitionsFromCsv(String bookDefinitionsCsvPath) {
+    public void init(String bookDefinitionsCsvPath) {
         if (bookDefinitionRepository.count() > 0) {
             return;
         }
@@ -98,14 +98,14 @@ public class BookDefinitionServiceImpl implements BookDefinitionService {
 
                 BookDefinition bookDefinition = new BookDefinition();
                 bookDefinition.setTitle(values[0]);
-                bookDefinition.setBookCode(values[1]);
+                bookDefinition.setBookNumber(values[1]);
 
                 Long categoryId = Long.parseLong(values[2]);
                 Category category = categoryRepository.findById(categoryId)
                         .orElseThrow(() -> new IllegalArgumentException("Category not found for id: " + categoryId));
                 bookDefinition.setCategory(category);
 
-                if (!bookDefinitionRepository.existsByBookCode(bookDefinition.getBookCode())) {
+                if (!bookDefinitionRepository.existsByBookNumber(bookDefinition.getBookNumber())) {
                     bookDefinitionRepository.save(bookDefinition);
                 }
             }
@@ -120,7 +120,7 @@ public class BookDefinitionServiceImpl implements BookDefinitionService {
         uploadFileUtil.checkImageIsValid(file);
 
         //Kiểm tra kí hiệu tên sách
-        if (bookDefinitionRepository.existsByBookCode(requestDto.getBookCode())) {
+        if (bookDefinitionRepository.existsByBookNumber(requestDto.getBookCode())) {
             throw new BadRequestException(ErrorMessage.BookDefinition.ERR_DUPLICATE_CODE, requestDto.getBookCode());
         }
 
@@ -195,7 +195,7 @@ public class BookDefinitionServiceImpl implements BookDefinitionService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.BookDefinition.ERR_NOT_FOUND_ID, id));
 
         //Kiểm tra kí hiệu tên sách
-        if (!Objects.equals(bookDefinition.getBookCode(), requestDto.getBookCode()) && bookDefinitionRepository.existsByBookCode(requestDto.getBookCode())) {
+        if (!Objects.equals(bookDefinition.getBookNumber(), requestDto.getBookCode()) && bookDefinitionRepository.existsByBookNumber(requestDto.getBookCode())) {
             throw new BadRequestException(ErrorMessage.BookDefinition.ERR_DUPLICATE_CODE, requestDto.getBookCode());
         }
 
@@ -280,7 +280,7 @@ public class BookDefinitionServiceImpl implements BookDefinitionService {
         bookDefinition.setEdition(requestDto.getEdition());
         bookDefinition.setReferencePrice(requestDto.getReferencePrice());
         bookDefinition.setPublicationPlace(requestDto.getPublicationPlace());
-        bookDefinition.setBookCode(requestDto.getBookCode());
+        bookDefinition.setBookNumber(requestDto.getBookCode());
         bookDefinition.setPageCount(requestDto.getPageCount());
         bookDefinition.setBookSize(requestDto.getBookSize());
         bookDefinition.setParallelTitle(requestDto.getParallelTitle());

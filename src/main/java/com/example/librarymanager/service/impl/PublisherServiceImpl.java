@@ -42,7 +42,7 @@ public class PublisherServiceImpl implements PublisherService {
     private final PublisherMapper publisherMapper;
 
     @Override
-    public void initPublishersFromCsv(String publishersCsvPath) {
+    public void init(String publishersCsvPath) {
         if (publisherRepository.count() > 0) {
             return;
         }

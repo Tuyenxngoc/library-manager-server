@@ -14,7 +14,7 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "book_definitions",
-        uniqueConstraints = @UniqueConstraint(name = "UN_BOOK_DEFINITIONS_BOOK_CODE", columnNames = "book_code"))
+        uniqueConstraints = @UniqueConstraint(name = "UN_BOOK_DEFINITIONS_BOOK_NUMBER", columnNames = "book_number"))
 public class BookDefinition {//Biên mục
 
     @Id
@@ -26,8 +26,8 @@ public class BookDefinition {//Biên mục
     @Column(name = "title", nullable = false)
     private String title;  // Nhan đề của biên mục
 
-    @Column(name = "book_code", nullable = false)
-    private String bookCode; // Kí hiệu tên sách
+    @Column(name = "book_number", nullable = false)
+    private String bookNumber; // Kí hiệu tên sách
 
     @Column(name = "publishing_year")
     private Integer publishingYear; // Năm xuất bản

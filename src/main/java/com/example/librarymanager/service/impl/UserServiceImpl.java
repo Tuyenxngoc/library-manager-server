@@ -1,6 +1,5 @@
 package com.example.librarymanager.service.impl;
 
-import com.example.librarymanager.config.properties.AdminInfo;
 import com.example.librarymanager.constant.*;
 import com.example.librarymanager.domain.dto.common.CommonResponseDto;
 import com.example.librarymanager.domain.dto.pagination.PaginationFullRequestDto;
@@ -76,20 +75,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void initAdmin(AdminInfo adminInfo, UserGroup userGroup) {
-        if (userRepository.count() == 0) {
-            User user = new User();
-            user.setUsername(adminInfo.getUsername());
-            user.setEmail(adminInfo.getEmail());
-            user.setPhoneNumber(adminInfo.getPhoneNumber());
-            user.setFullName(adminInfo.getName());
-            user.setPassword(passwordEncoder.encode(adminInfo.getPassword()));
-            user.setUserGroup(userGroup);
-            user.setStatus(AccountStatus.ACTIVATED);
-            userRepository.save(user);
-
-            log.info("Create admin user successfully.");
+    public void init() {
+        if (userRepository.count() != 0) {
+            return;
         }
+
+        User user = new User();
+        user.setUsername("tuyenngoc");
+        user.setEmail("tuyenngoc@gmail.com");
+        user.setPhoneNumber("0984176999");
+        user.setFullName("Trịnh Ngọc Tuyến");
+        user.setPassword(passwordEncoder.encode("admin"));
+        user.setUserGroup(userGroupRepository.findByCode("ADMIN"));
+        user.setStatus(AccountStatus.ACTIVATED);
+        userRepository.save(user);
     }
 
     @Override

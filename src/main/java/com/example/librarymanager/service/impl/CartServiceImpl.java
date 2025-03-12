@@ -3,9 +3,6 @@ package com.example.librarymanager.service.impl;
 import com.example.librarymanager.constant.ErrorMessage;
 import com.example.librarymanager.constant.SuccessMessage;
 import com.example.librarymanager.domain.dto.common.CommonResponseDto;
-import com.example.librarymanager.domain.dto.pagination.PaginationFullRequestDto;
-import com.example.librarymanager.domain.dto.pagination.PaginationResponseDto;
-import com.example.librarymanager.domain.dto.response.borrowreceipt.BorrowRequestSummaryResponseDto;
 import com.example.librarymanager.domain.dto.response.cart.CartDetailResponseDto;
 import com.example.librarymanager.domain.entity.Book;
 import com.example.librarymanager.domain.entity.Cart;
@@ -13,12 +10,14 @@ import com.example.librarymanager.domain.entity.CartDetail;
 import com.example.librarymanager.domain.entity.Reader;
 import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.NotFoundException;
-import com.example.librarymanager.repository.*;
-import com.example.librarymanager.service.CartDetailService;
+import com.example.librarymanager.repository.BookRepository;
+import com.example.librarymanager.repository.CartDetailRepository;
+import com.example.librarymanager.repository.CartRepository;
+import com.example.librarymanager.repository.ReaderRepository;
+import com.example.librarymanager.service.CartService;
+import com.example.librarymanager.util.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +25,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class CartDetailServiceImpl implements CartDetailService {
+public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
 
@@ -36,7 +35,7 @@ public class CartDetailServiceImpl implements CartDetailService {
 
     private final BookRepository bookRepository;
 
-    private final MessageSource messageSource;
+    private final MessageUtil messageUtil;
 
     @Value("${cartDetail.maxBooks}")
     private int maxBooksInCart;
@@ -73,7 +72,7 @@ public class CartDetailServiceImpl implements CartDetailService {
 
         cartDetailRepository.save(cartDetail);
 
-        String message = messageSource.getMessage(SuccessMessage.CREATE, null, LocaleContextHolder.getLocale());
+        String message = messageUtil.getMessage(SuccessMessage.CREATE);
         return new CommonResponseDto(message);
     }
 
@@ -85,7 +84,7 @@ public class CartDetailServiceImpl implements CartDetailService {
 
         cartRepository.save(cart);
 
-        String message = messageSource.getMessage(SuccessMessage.DELETE, null, LocaleContextHolder.getLocale());
+        String message = messageUtil.getMessage(SuccessMessage.DELETE);
         return new CommonResponseDto(message);
     }
 
@@ -97,12 +96,8 @@ public class CartDetailServiceImpl implements CartDetailService {
 
         cartRepository.save(cart);
 
-        String message = messageSource.getMessage(SuccessMessage.DELETE, null, LocaleContextHolder.getLocale());
+        String message = messageUtil.getMessage(SuccessMessage.DELETE);
         return new CommonResponseDto(message);
     }
 
-    @Override
-    public PaginationResponseDto<BorrowRequestSummaryResponseDto> getPendingBorrowRequests(PaginationFullRequestDto requestDto) {
-        return null;
-    }
 }

@@ -50,7 +50,7 @@ public class BookSetServiceImpl implements BookSetService {
     private final LogService logService;
 
     @Override
-    public void initBookSetsFromCSv(String bookSetsCsvPath) {
+    public void init(String bookSetsCsvPath) {
         if (bookSetRepository.count() > 0) {
             return;
         }
