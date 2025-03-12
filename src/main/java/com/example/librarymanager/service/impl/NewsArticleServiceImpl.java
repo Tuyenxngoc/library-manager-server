@@ -26,6 +26,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -172,8 +173,14 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     }
 
     @Override
+    @Transactional
     public NewsArticle getNewsArticleByTitleSlug(String titleSlug) {
-        return newsArticleRepository.findByTitleSlug(titleSlug)
+        NewsArticle article = newsArticleRepository.findByTitleSlug(titleSlug)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.NewsArticle.ERR_NOT_FOUND_ID));
+
+        // Tăng số lượt xem
+        article.setViewCount(article.getViewCount() + 1);
+
+        return newsArticleRepository.save(article);
     }
 }

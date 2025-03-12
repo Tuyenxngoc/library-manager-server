@@ -43,4 +43,7 @@ public class NewsArticle {
     @Column(name = "news_type", nullable = false)
     private String newsType;
 
+    @Column(name = "view_count", nullable = false)
+    private Long viewCount = 0L;
+
 }
