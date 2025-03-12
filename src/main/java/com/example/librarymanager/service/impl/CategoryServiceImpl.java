@@ -55,13 +55,17 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void init(String categoriesCsvPath) {
+        log.info("Initializing category import from CSV: {}", categoriesCsvPath);
+
         if (categoryRepository.count() > 0) {
+            log.info("Categories already exist in the database. Skipping import.");
             return;
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(categoriesCsvPath))) {
             String line;
             br.readLine();
+
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(";");
                 if (values.length < 3) continue;
@@ -71,14 +75,22 @@ public class CategoryServiceImpl implements CategoryService {
                 category.setCategoryCode(values[1]);
 
                 Long categoryGroupId = Long.parseLong(values[2]);
-                CategoryGroup categoryGroup = categoryGroupRepository.findById(categoryGroupId)
-                        .orElseThrow(() -> new RuntimeException("Category group not found with id: " + categoryGroupId));
-                category.setCategoryGroup(categoryGroup);
+                try {
+                    CategoryGroup categoryGroup = categoryGroupRepository.findById(categoryGroupId)
+                            .orElseThrow(() -> new RuntimeException("Category group not found with id: " + categoryGroupId));
+                    category.setCategoryGroup(categoryGroup);
+                } catch (RuntimeException e) {
+                    log.warn("Skipping category '{}' due to missing category group with ID: {}", values[0], categoryGroupId);
+                    continue;
+                }
 
                 if (!categoryRepository.existsByCategoryCode(category.getCategoryCode())) {
                     categoryRepository.save(category);
+                    log.info("Successfully saved category: {} (Code: {})", category.getCategoryName(), category.getCategoryCode());
                 }
             }
+
+            log.info("Category import completed successfully.");
         } catch (IOException e) {
             log.error("Error while initializing categories from CSV: {}", e.getMessage(), e);
         }

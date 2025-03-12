@@ -93,13 +93,17 @@ public class ReaderServiceImpl implements ReaderService {
 
     @Override
     public void init(String readersCsvPath) {
+        log.info("Initializing reader import from CSV: {}", readersCsvPath);
+
         if (readerRepository.count() > 0) {
+            log.info("Readers already exist in the database. Skipping import.");
             return;
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(readersCsvPath))) {
             String line;
             br.readLine();
+
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(";");
                 if (values.length < 3) continue;
@@ -118,8 +122,11 @@ public class ReaderServiceImpl implements ReaderService {
                 if (!readerRepository.existsByCardNumber(reader.getCardNumber())
                         && !readerRepository.existsByEmail(reader.getEmail())) {
                     readerRepository.save(reader);
+                    log.info("Successfully saved reader: {}", reader.getFullName());
                 }
             }
+
+            log.info("Reader import completed successfully.");
         } catch (IOException e) {
             log.error("Error while saving reader: {}", e.getMessage(), e);
         }

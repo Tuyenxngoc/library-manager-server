@@ -23,7 +23,10 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void init() {
+        log.info("Starting role initialization");
+
         if (roleRepository.count() != 0) {
+            log.info("Roles already initialized. Skipping initialization.");
             return;
         }
 
@@ -49,6 +52,7 @@ public class RoleServiceImpl implements RoleService {
         );
 
         roleRepository.saveAll(roles);
+        log.info("Role initialization completed. {} roles have been added.", roles.size());
     }
 
     @Override

@@ -51,13 +51,17 @@ public class CategoryGroupServiceImpl implements CategoryGroupService {
 
     @Override
     public void init(String categoryGroupsCsvPath) {
+        log.info("Initializing category group import from CSV: {}", categoryGroupsCsvPath);
+
         if (categoryGroupRepository.count() > 0) {
+            log.info("Category groups already exist in the database. Skipping import.");
             return;
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(categoryGroupsCsvPath))) {
             String line;
             br.readLine();
+
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(";");
                 if (values.length < 1) continue;
@@ -67,8 +71,11 @@ public class CategoryGroupServiceImpl implements CategoryGroupService {
 
                 if (!categoryGroupRepository.existsByGroupName(categoryGroup.getGroupName())) {
                     categoryGroupRepository.save(categoryGroup);
+                    log.info("Successfully saved category group: {}", categoryGroup.getGroupName());
                 }
             }
+
+            log.info("Category group import completed successfully.");
         } catch (IOException e) {
             log.error("Error while initializing category groups from CSV: {}", e.getMessage(), e);
         }

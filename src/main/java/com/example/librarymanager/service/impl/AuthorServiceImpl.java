@@ -46,13 +46,17 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void init(String authorsCsvPath) {
+        log.info("Initializing author import from CSV: {}", authorsCsvPath);
+
         if (authorRepository.count() > 0) {
+            log.info("Authors already exist in the database. Skipping import.");
             return;
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(authorsCsvPath))) {
             String line;
             br.readLine();
+
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(";");
                 if (values.length < 10) continue;
@@ -73,8 +77,11 @@ public class AuthorServiceImpl implements AuthorService {
 
                 if (!authorRepository.existsByCode(author.getCode())) {
                     authorRepository.save(author);
+                    log.info("Successfully saved author: {} (Code: {})", author.getFullName(), author.getCode());
                 }
             }
+
+            log.info("Author import completed successfully.");
         } catch (IOException e) {
             log.error("Error while saving author: {}", e.getMessage(), e);
         }

@@ -43,13 +43,17 @@ public class ClassificationSymbolServiceImpl implements ClassificationSymbolServ
 
     @Override
     public void init(String classificationSymbolsCsvPath) {
+        log.info("Initializing classification symbol import from CSV: {}", classificationSymbolsCsvPath);
+
         if (classificationSymbolRepository.count() > 0) {
+            log.info("Classification symbols already exist in the database. Skipping import.");
             return;
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(classificationSymbolsCsvPath))) {
             String line;
             br.readLine();
+
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(";");
                 if (values.length < 3) continue;
@@ -57,20 +61,26 @@ public class ClassificationSymbolServiceImpl implements ClassificationSymbolServ
                 ClassificationSymbol classificationSymbol = new ClassificationSymbol();
                 classificationSymbol.setName(values[0]);
                 classificationSymbol.setCode(values[1]);
+
                 try {
                     int level = Integer.parseInt(values[2].trim());
                     classificationSymbol.setLevel(level);
                 } catch (NumberFormatException e) {
-                    log.warn("Invalid level value for line '{}', must be an integer. Error: {}", line, e.getMessage());
+                    log.warn("Skipping classification symbol '{}': Invalid level value '{}' (must be an integer). Error: {}",
+                            values[1], values[2], e.getMessage());
                     continue;
                 }
 
                 if (!classificationSymbolRepository.existsByCode(classificationSymbol.getCode())) {
                     classificationSymbolRepository.save(classificationSymbol);
+                    log.info("Successfully saved classification symbol: {} (Code: {}, Level: {})",
+                            classificationSymbol.getName(), classificationSymbol.getCode(), classificationSymbol.getLevel());
                 }
             }
+
+            log.info("Classification symbol import completed successfully.");
         } catch (IOException e) {
-            log.error("Error while initializing classification symbol from CSV: {}", e.getMessage(), e);
+            log.error("Error while initializing classification symbols from CSV: {}", e.getMessage(), e);
         }
     }
 

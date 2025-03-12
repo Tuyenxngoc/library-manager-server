@@ -59,21 +59,26 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Override
     public void init() {
+        log.info("Starting user group initialization");
+
         if (userGroupRepository.count() != 0) {
+            log.info("User groups already initialized. Skipping initialization.");
             return;
         }
 
         UserGroup userGroup = new UserGroup();
         userGroup.setName("Quản trị viên");
         userGroup.setCode("ADMIN");
-        userGroup.getUserGroupRoles().addAll(
-                roleRepository.findAll().stream()
-                        .filter(role -> !role.getCode().equals(RoleConstant.ROLE_READER))
-                        .map(role -> new UserGroupRole(role, userGroup))
-                        .collect(Collectors.toSet())
-        );
+        Set<UserGroupRole> userGroupRoles = roleRepository.findAll().stream()
+                .filter(role -> !role.getCode().equals(RoleConstant.ROLE_READER))
+                .map(role -> new UserGroupRole(role, userGroup))
+                .collect(Collectors.toSet());
+
+        userGroup.getUserGroupRoles().addAll(userGroupRoles);
 
         userGroupRepository.save(userGroup);
+
+        log.info("User group initialization completed. Admin user group created with ID: {}", userGroup.getId());
     }
 
     @Override

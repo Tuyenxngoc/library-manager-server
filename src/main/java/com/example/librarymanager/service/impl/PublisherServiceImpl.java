@@ -43,13 +43,17 @@ public class PublisherServiceImpl implements PublisherService {
 
     @Override
     public void init(String publishersCsvPath) {
+        log.info("Initializing publisher import from CSV: {}", publishersCsvPath);
+
         if (publisherRepository.count() > 0) {
+            log.info("Publishers already exist in the database. Skipping import.");
             return;
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(publishersCsvPath))) {
             String line;
             br.readLine();
+
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(";");
                 if (values.length < 4) continue;
@@ -62,8 +66,11 @@ public class PublisherServiceImpl implements PublisherService {
 
                 if (!publisherRepository.existsByCode(publisher.getCode())) {
                     publisherRepository.save(publisher);
+                    log.info("Successfully saved publisher: {} (Code: {})", publisher.getName(), publisher.getCode());
                 }
             }
+
+            log.info("Publisher import completed successfully.");
         } catch (IOException e) {
             log.error("Error while initializing publishers from CSV: {}", e.getMessage(), e);
         }

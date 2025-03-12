@@ -85,13 +85,17 @@ public class BookDefinitionServiceImpl implements BookDefinitionService {
 
     @Override
     public void init(String bookDefinitionsCsvPath) {
+        log.info("Initializing book definition import from CSV: {}", bookDefinitionsCsvPath);
+
         if (bookDefinitionRepository.count() > 0) {
+            log.info("Book definitions already exist in the database. Skipping import.");
             return;
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(bookDefinitionsCsvPath))) {
             String line;
             br.readLine();
+
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(";");
                 if (values.length < 3) continue;
@@ -100,15 +104,31 @@ public class BookDefinitionServiceImpl implements BookDefinitionService {
                 bookDefinition.setTitle(values[0]);
                 bookDefinition.setBookNumber(values[1]);
 
-                Long categoryId = Long.parseLong(values[2]);
-                Category category = categoryRepository.findById(categoryId)
-                        .orElseThrow(() -> new IllegalArgumentException("Category not found for id: " + categoryId));
-                bookDefinition.setCategory(category);
+                Long categoryId;
+                try {
+                    categoryId = Long.parseLong(values[2].trim());
+                } catch (NumberFormatException e) {
+                    log.warn("Skipping book '{}' due to invalid category ID '{}'. Error: {}", values[0], values[2], e.getMessage());
+                    continue;
+                }
+
+                try {
+                    Category category = categoryRepository.findById(categoryId)
+                            .orElseThrow(() -> new IllegalArgumentException("Category not found for ID: " + categoryId));
+                    bookDefinition.setCategory(category);
+                } catch (IllegalArgumentException e) {
+                    log.warn("Skipping book '{}' because category ID '{}' was not found.", values[0], categoryId);
+                    continue;
+                }
 
                 if (!bookDefinitionRepository.existsByBookNumber(bookDefinition.getBookNumber())) {
                     bookDefinitionRepository.save(bookDefinition);
+                    log.info("Successfully saved book definition: '{}' (Book Number: {}, Category: {})",
+                            bookDefinition.getTitle(), bookDefinition.getBookNumber(), bookDefinition.getCategory().getCategoryName());
                 }
             }
+
+            log.info("Book definition import completed successfully.");
         } catch (IOException e) {
             log.error("Error while initializing book definitions from CSV: {}", e.getMessage(), e);
         }

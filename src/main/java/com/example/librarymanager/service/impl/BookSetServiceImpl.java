@@ -51,13 +51,17 @@ public class BookSetServiceImpl implements BookSetService {
 
     @Override
     public void init(String bookSetsCsvPath) {
+        log.info("Initializing book set import from CSV: {}", bookSetsCsvPath);
+
         if (bookSetRepository.count() > 0) {
+            log.info("Book sets already exist in the database. Skipping import.");
             return;
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(bookSetsCsvPath))) {
             String line;
             br.readLine();
+
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(";");
                 if (values.length < 1) continue;
@@ -67,8 +71,11 @@ public class BookSetServiceImpl implements BookSetService {
 
                 if (!bookSetRepository.existsByName(bookSet.getName())) {
                     bookSetRepository.save(bookSet);
+                    log.info("Successfully saved book set: {}", bookSet.getName());
                 }
             }
+
+            log.info("Book set import completed successfully.");
         } catch (IOException e) {
             log.error("Error while initializing book sets from CSV: {}", e.getMessage(), e);
         }

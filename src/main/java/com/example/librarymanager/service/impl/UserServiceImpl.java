@@ -76,7 +76,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void init() {
+        log.info("Starting user initialization");
+
         if (userRepository.count() != 0) {
+            log.info("Users already exist. Skipping initialization.");
             return;
         }
 
@@ -88,7 +91,9 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode("admin"));
         user.setUserGroup(userGroupRepository.findByCode("ADMIN"));
         user.setStatus(AccountStatus.ACTIVATED);
+
         userRepository.save(user);
+        log.info("Initial admin user created successfully with username: {}", user.getUsername());
     }
 
     @Override
