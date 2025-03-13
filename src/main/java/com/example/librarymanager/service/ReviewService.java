@@ -2,15 +2,18 @@ package com.example.librarymanager.service;
 
 import com.example.librarymanager.domain.dto.common.CommonResponseDto;
 import com.example.librarymanager.domain.dto.request.ReviewRequestDto;
+import com.example.librarymanager.domain.dto.response.ReviewResponseDto;
+
+import java.util.List;
 
 public interface ReviewService {
     CommonResponseDto addReview(String cardNumber, ReviewRequestDto request);
 
-    Object getReviewsByBook(Long bookId);
+    List<ReviewResponseDto> getReviewsByBook(Long bookId);
 
-    Object getReviewsByReader(Long readerId);
+    List<ReviewResponseDto> getReviewsByReader(Long readerId);
 
     CommonResponseDto updateReview(Long reviewId, ReviewRequestDto request);
 
-    void deleteReview(Long reviewId);
+    CommonResponseDto deleteReview(Long reviewId);
 }
