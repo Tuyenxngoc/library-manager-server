@@ -24,7 +24,7 @@ public class BookDefinitionRequestDto {
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
     @Size(max = 100, message = ErrorMessage.INVALID_TEXT_LENGTH)
-    private String bookCode; // Kí hiệu tên sách
+    private String bookNumber; // Kí hiệu tên sách
 
     @NotNull(message = ErrorMessage.INVALID_SOME_THING_FIELD_IS_REQUIRED)
     private Long categoryId; // Danh mục
@@ -64,13 +64,13 @@ public class BookDefinitionRequestDto {
     @Size(max = 100, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String additionalMaterial; // Tài liệu đi kèm
 
-    @Size(max = 100, message = ErrorMessage.INVALID_TEXT_LENGTH)
+    @Size(max = 1000, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String summary; // Tóm tắt
 
     @Size(max = 100, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String isbn; // Mã ISBN
 
-    @Size(max = 100, message = ErrorMessage.INVALID_TEXT_LENGTH)
+    @Size(max = 500, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String keywords; // Từ khóa tìm kiếm
 
     @Size(max = 100, message = ErrorMessage.INVALID_TEXT_LENGTH)

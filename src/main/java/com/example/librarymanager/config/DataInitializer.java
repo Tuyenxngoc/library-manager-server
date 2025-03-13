@@ -7,6 +7,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @Log4j2
 @Component
 @RequiredArgsConstructor
@@ -63,14 +68,24 @@ public class DataInitializer implements CommandLineRunner {
         roleService.init();
         userGroupService.init();
         userService.init();
-        readerService.init(readersCsvPath);
-        authorService.init(authorsCsvPath);
-        bookSetService.init(bookSetsCsvPath);
-        categoryGroupService.init(categoryGroupsCsvPath);
+
+        ExecutorService executor = Executors.newFixedThreadPool(6);
+
+        List<CompletableFuture<Void>> tasks = List.of(
+                CompletableFuture.runAsync(() -> readerService.init(readersCsvPath), executor),
+                CompletableFuture.runAsync(() -> authorService.init(authorsCsvPath), executor),
+                CompletableFuture.runAsync(() -> bookSetService.init(bookSetsCsvPath), executor),
+                CompletableFuture.runAsync(() -> categoryGroupService.init(categoryGroupsCsvPath), executor),
+                CompletableFuture.runAsync(() -> publisherService.init(publishersCsvPath), executor),
+                CompletableFuture.runAsync(() -> classificationSymbolService.init(classificationSymbolsCsvPath), executor)
+        );
+
+        CompletableFuture.allOf(tasks.toArray(new CompletableFuture[0])).join();
+
         categoryService.init(categoriesCsvPath);
-        publisherService.init(publishersCsvPath);
-        classificationSymbolService.init(classificationSymbolsCsvPath);
         bookDefinitionService.init(bookDefinitionsCsvPath);
+
+        executor.shutdown();
     }
 
 }

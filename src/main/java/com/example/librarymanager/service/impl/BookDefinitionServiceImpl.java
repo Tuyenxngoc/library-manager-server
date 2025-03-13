@@ -140,8 +140,8 @@ public class BookDefinitionServiceImpl implements BookDefinitionService {
         uploadFileUtil.checkImageIsValid(file);
 
         //Kiểm tra kí hiệu tên sách
-        if (bookDefinitionRepository.existsByBookNumber(requestDto.getBookCode())) {
-            throw new BadRequestException(ErrorMessage.BookDefinition.ERR_DUPLICATE_CODE, requestDto.getBookCode());
+        if (bookDefinitionRepository.existsByBookNumber(requestDto.getBookNumber())) {
+            throw new BadRequestException(ErrorMessage.BookDefinition.ERR_DUPLICATE_CODE, requestDto.getBookNumber());
         }
 
         //Map dữ liệu
@@ -215,8 +215,8 @@ public class BookDefinitionServiceImpl implements BookDefinitionService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.BookDefinition.ERR_NOT_FOUND_ID, id));
 
         //Kiểm tra kí hiệu tên sách
-        if (!Objects.equals(bookDefinition.getBookNumber(), requestDto.getBookCode()) && bookDefinitionRepository.existsByBookNumber(requestDto.getBookCode())) {
-            throw new BadRequestException(ErrorMessage.BookDefinition.ERR_DUPLICATE_CODE, requestDto.getBookCode());
+        if (!Objects.equals(bookDefinition.getBookNumber(), requestDto.getBookNumber()) && bookDefinitionRepository.existsByBookNumber(requestDto.getBookNumber())) {
+            throw new BadRequestException(ErrorMessage.BookDefinition.ERR_DUPLICATE_CODE, requestDto.getBookNumber());
         }
 
         // Cập nhật danh mục
@@ -300,7 +300,7 @@ public class BookDefinitionServiceImpl implements BookDefinitionService {
         bookDefinition.setEdition(requestDto.getEdition());
         bookDefinition.setReferencePrice(requestDto.getReferencePrice());
         bookDefinition.setPublicationPlace(requestDto.getPublicationPlace());
-        bookDefinition.setBookNumber(requestDto.getBookCode());
+        bookDefinition.setBookNumber(requestDto.getBookNumber());
         bookDefinition.setPageCount(requestDto.getPageCount());
         bookDefinition.setBookSize(requestDto.getBookSize());
         bookDefinition.setParallelTitle(requestDto.getParallelTitle());

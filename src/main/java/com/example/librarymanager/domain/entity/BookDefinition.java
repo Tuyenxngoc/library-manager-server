@@ -54,7 +54,7 @@ public class BookDefinition {//Biên mục
     private String parallelTitle; // Nhan đề song song
 
     @Lob
-    @Column(name = "summary")
+    @Column(name = "summary", columnDefinition = "TEXT")
     private String summary; // Tóm tắt
 
     @Column(name = "subtitle")
@@ -63,7 +63,7 @@ public class BookDefinition {//Biên mục
     @Column(name = "additional_material")
     private String additionalMaterial; // Tài liệu đi kèm
 
-    @Column(name = "keywords")
+    @Column(name = "keywords", length = 500)
     private String keywords; // Từ khóa tìm kiếm
 
     @Column(name = "isbn")
