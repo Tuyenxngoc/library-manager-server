@@ -35,6 +35,7 @@ public class ErrorMessage {
     public static final String INVALID_MINIMUM_ONE = "invalid.minimum-one";
     public static final String INVALID_MINIMUM_ZERO = "invalid.minimum-zero";
     public static final String INVALID_MAXIMUM_ONE_HUNDRED = "invalid.maximum-one-hundred";
+    public static final String INVALID_MAXIMUM_FIVE = "invalid.maximum-five";
     public static final String INVALID_MAXIMUM_INT = "invalid.maximum-int";
     public static final String INVALID_MAXIMUM_SHORT = "invalid.maximum-short";
     public static final String INVALID_TEXT_LENGTH = "invalid.text.length";
@@ -196,6 +197,10 @@ public class ErrorMessage {
     public static class Cart {
         public static final String ERR_NOT_FOUND_ID = "exception.cart.not.found.id";
         public static final String ERR_MAX_BOOKS_IN_CART = "exception.cart.max.books.exceeded";
+    }
+
+    public static class Review {
+        public static final String ERR_NOT_FOUND_ID = "exception.review.not.found.id";
     }
 
 }

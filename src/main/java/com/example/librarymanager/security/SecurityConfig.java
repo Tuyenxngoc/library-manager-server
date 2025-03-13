@@ -65,7 +65,8 @@ public class SecurityConfig {
             "api/v1/system-settings/holidays",
             "api/v1/system-settings/holidays/*",
             "api/v1/system-settings/slides",
-            "api/v1/system-settings/slides/*"
+            "api/v1/system-settings/slides/*",
+            "api/v1/reviews/book/*"
     };
 
     private static final String[] POST_WHITELIST_URL = {
