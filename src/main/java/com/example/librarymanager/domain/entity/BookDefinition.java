@@ -112,4 +112,8 @@ public class BookDefinition {//Biên mục
     @JsonIgnore
     private List<BookAuthor> bookAuthors = new ArrayList<>();  // Tác giả
 
+    @OneToMany(mappedBy = "bookDefinition", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Review> reviews = new ArrayList<>();  // Tác giả
+
 }

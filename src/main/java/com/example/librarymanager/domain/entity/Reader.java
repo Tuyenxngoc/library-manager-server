@@ -88,4 +88,9 @@ public class Reader {
     @OneToMany(mappedBy = "reader", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<ReaderViolation> readerViolations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reader", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Review> reviews = new ArrayList<>();
+
 }

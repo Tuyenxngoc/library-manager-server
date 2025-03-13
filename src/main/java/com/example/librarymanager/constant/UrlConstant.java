@@ -315,4 +315,14 @@ public class UrlConstant {
         public static final String GET_LIBRARY_INFO = PRE_FIX + "/library-info";
         public static final String UPDATE_LIBRARY_INFO = PRE_FIX + "/library-info";
     }
+
+    public static class Review {
+        private static final String PRE_FIX = "/reviews";
+
+        public static final String CREATE = PRE_FIX;
+        public static final String GET_BY_BOOK = PRE_FIX + "/book/{bookId}";
+        public static final String GET_BY_READER_ID = PRE_FIX + "/user/{readerId}";
+        public static final String UPDATE = PRE_FIX + "/{reviewId}";
+        public static final String DELETE = PRE_FIX + "/{reviewId}";
+    }
 }
