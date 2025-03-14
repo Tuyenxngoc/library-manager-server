@@ -23,6 +23,7 @@ import com.example.librarymanager.security.jwt.JwtTokenProvider;
 import com.example.librarymanager.service.AuthService;
 import com.example.librarymanager.service.EmailRateLimiterService;
 import com.example.librarymanager.service.JwtBlacklistService;
+import com.example.librarymanager.service.LogService;
 import com.example.librarymanager.util.JwtUtil;
 import com.example.librarymanager.util.RandomPasswordUtil;
 import com.example.librarymanager.util.SendMailUtil;
@@ -56,6 +57,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthServiceImpl implements AuthService {
+    private static final String TAG = "Xác thực";
 
     AuthenticationManager authenticationManager;
 
@@ -74,6 +76,8 @@ public class AuthServiceImpl implements AuthService {
     SendMailUtil sendMailUtil;
 
     ReaderRepository readerRepository;
+
+    LogService logService;
 
     @Override
     public LoginResponseDto readerLogin(ReaderLoginRequestDto request) {
@@ -137,6 +141,8 @@ public class AuthServiceImpl implements AuthService {
 
             String accessToken = jwtTokenProvider.generateToken(customUserDetails, false);
             String refreshToken = jwtTokenProvider.generateToken(customUserDetails, true);
+
+            logService.createLog(TAG, "Đăng nhập", request.getUsername() + " đăng nhập vào hệ thống", customUserDetails.getUserId());
 
             return new LoginResponseDto(
                     accessToken,
