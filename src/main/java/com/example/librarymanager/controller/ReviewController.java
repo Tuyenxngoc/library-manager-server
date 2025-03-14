@@ -47,7 +47,7 @@ public class ReviewController {
     }
 
     @Operation(summary = "Update a review")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGE_REVIEW', 'ROLE_READER')")
+    @PreAuthorize("hasRole('ROLE_READER')")
     @PutMapping(UrlConstant.Review.UPDATE)
     public ResponseEntity<?> updateReview(
             @PathVariable Long reviewId,

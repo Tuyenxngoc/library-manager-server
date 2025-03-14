@@ -77,7 +77,7 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewResponseDto updateReview(Long reviewId, UpdateReviewRequestDto requestDto, String cardNumber) {
         Review review = getEntity(reviewId);
 
-        if (cardNumber != null && !review.getReader().getCardNumber().equals(cardNumber)) {
+        if (!review.getReader().getCardNumber().equals(cardNumber)) {
             throw new UnauthorizedException(ErrorMessage.ERR_FORBIDDEN_UPDATE_DELETE);
         }
 
