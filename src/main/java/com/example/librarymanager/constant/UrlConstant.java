@@ -324,4 +324,12 @@ public class UrlConstant {
         public static final String UPDATE = PRE_FIX + "/{reviewId}";
         public static final String DELETE = PRE_FIX + "/{reviewId}";
     }
+
+    public static class Notification {
+        private static final String PRE_FIX = "/notifications";
+
+        public static final String GET_BY_USER = PRE_FIX;
+        public static final String MARK_AS_READ = PRE_FIX + "/read/{notificationId}";
+        public static final String DELETE = PRE_FIX + "/{notificationId}";
+    }
 }

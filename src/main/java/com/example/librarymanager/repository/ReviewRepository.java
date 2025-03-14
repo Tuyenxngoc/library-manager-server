@@ -13,10 +13,10 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long>, JpaSpecificationExecutor<Review> {
 
-    @Query("SELECT new com.example.librarymanager.domain.dto.response.ReviewResponseDto(r) FROM Review r WHERE r.bookDefinition.id = :bookDefinitionId")
+    @Query("SELECT new com.example.librarymanager.domain.dto.response.ReviewResponseDto(r) FROM Review r WHERE r.bookDefinition.id = :bookDefinitionId ORDER BY r.lastModifiedDate DESC")
     List<ReviewResponseDto> getReviewsByBook(@Param("bookDefinitionId") Long bookDefinitionId);
 
-    @Query("SELECT new com.example.librarymanager.domain.dto.response.ReviewResponseDto(r) FROM Review r WHERE r.reader.id = :readerId")
+    @Query("SELECT new com.example.librarymanager.domain.dto.response.ReviewResponseDto(r) FROM Review r WHERE r.reader.id = :readerId ORDER BY r.lastModifiedDate DESC")
     List<ReviewResponseDto> getReviewsByReader(@Param("readerId") Long readerId);
 
     boolean existsByBookDefinition_IdAndReader_CardNumber(Long bookDefinitionId, String cardNumber);

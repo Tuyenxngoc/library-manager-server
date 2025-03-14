@@ -69,6 +69,10 @@ public class User {
     @JsonIgnore
     private UserGroup userGroup;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Notification> notifications = new ArrayList<>();
+
     public User(String userId) {
         this.id = userId;
     }
