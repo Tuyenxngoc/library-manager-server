@@ -18,7 +18,6 @@ public class UpdateReviewRequestDto {
     @Max(value = 5, message = ErrorMessage.INVALID_MAXIMUM_FIVE)
     private Integer rating;
 
-    @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
     @Size(max = 500, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String comment;
 
