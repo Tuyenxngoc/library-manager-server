@@ -9,6 +9,7 @@ import com.example.librarymanager.domain.dto.response.ReviewResponseDto;
 import com.example.librarymanager.domain.entity.BookDefinition;
 import com.example.librarymanager.domain.entity.Reader;
 import com.example.librarymanager.domain.entity.Review;
+import com.example.librarymanager.exception.BadRequestException;
 import com.example.librarymanager.exception.NotFoundException;
 import com.example.librarymanager.exception.UnauthorizedException;
 import com.example.librarymanager.repository.BookDefinitionRepository;
@@ -50,6 +51,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewResponseDto addReview(String cardNumber, CreateReviewRequestDto requestDto) {
+        boolean hasReviewed = reviewRepository.existsByBookDefinition_IdAndReader_CardNumber(requestDto.getBookDefinitionId(), cardNumber);
+        if (hasReviewed) {
+            throw new BadRequestException(ErrorMessage.Review.ERR_ALREADY_REVIEWED);
+        }
+
         BookDefinition bookDefinition = bookDefinitionRepository.findById(requestDto.getBookDefinitionId())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.BookDefinition.ERR_NOT_FOUND_ID, requestDto.getBookDefinitionId()));
 

@@ -16,11 +16,16 @@ public class CurrentUserLoginResponseDto {
 
     private String name;
 
+    private String userId;
+
+    private String cardNumber;
+
     private Set<RoleConstant> roleNames;
 
     public static CurrentUserLoginResponseDto create(User user) {
         CurrentUserLoginResponseDto responseDto = CurrentUserLoginResponseDto.builder()
                 .name(user.getFullName())
+                .userId(user.getId())
                 .roleNames(new HashSet<>())
                 .build();
 
@@ -35,6 +40,7 @@ public class CurrentUserLoginResponseDto {
     public static CurrentUserLoginResponseDto create(Reader reader) {
         CurrentUserLoginResponseDto responseDto = CurrentUserLoginResponseDto.builder()
                 .name(reader.getFullName())
+                .cardNumber(reader.getCardNumber())
                 .roleNames(new HashSet<>())
                 .build();
         responseDto.getRoleNames().add(RoleConstant.ROLE_READER);

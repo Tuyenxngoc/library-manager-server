@@ -7,8 +7,6 @@ import com.example.librarymanager.domain.dto.pagination.PaginationResponseDto;
 import com.example.librarymanager.domain.dto.pagination.PagingMeta;
 import com.example.librarymanager.domain.dto.request.UserRequestDto;
 import com.example.librarymanager.domain.dto.response.UserResponseDto;
-import com.example.librarymanager.domain.dto.response.auth.CurrentUserLoginResponseDto;
-import com.example.librarymanager.domain.entity.Reader;
 import com.example.librarymanager.domain.entity.User;
 import com.example.librarymanager.domain.entity.UserGroup;
 import com.example.librarymanager.domain.mapper.UserMapper;
@@ -20,7 +18,6 @@ import com.example.librarymanager.exception.NotFoundException;
 import com.example.librarymanager.repository.ReaderRepository;
 import com.example.librarymanager.repository.UserGroupRepository;
 import com.example.librarymanager.repository.UserRepository;
-import com.example.librarymanager.security.CustomUserDetails;
 import com.example.librarymanager.service.LogService;
 import com.example.librarymanager.service.UserService;
 import com.example.librarymanager.util.PaginationUtil;
@@ -94,22 +91,6 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
         log.info("Initial admin user created successfully with username: {}", user.getUsername());
-    }
-
-    @Override
-    public CurrentUserLoginResponseDto getCurrentUser(CustomUserDetails userDetails) {
-        if (userDetails.getUserId() != null) {
-            User user = userRepository.findById(userDetails.getUserId())
-                    .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_ID, userDetails.getUserId()));
-
-            return CurrentUserLoginResponseDto.create(user);
-        } else if (userDetails.getCardNumber() != null) {
-            Reader reader = readerRepository.findByCardNumber(userDetails.getCardNumber())
-                    .orElseThrow(() -> new NotFoundException(ErrorMessage.Reader.ERR_NOT_FOUND_CARD_NUMBER, userDetails.getCardNumber()));
-
-            return CurrentUserLoginResponseDto.create(reader);
-        }
-        return null;
     }
 
     @Override

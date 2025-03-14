@@ -19,4 +19,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, JpaSpecif
     @Query("SELECT new com.example.librarymanager.domain.dto.response.ReviewResponseDto(r) FROM Review r WHERE r.reader.id = :readerId")
     List<ReviewResponseDto> getReviewsByReader(@Param("readerId") Long readerId);
 
+    boolean existsByBookDefinition_IdAndReader_CardNumber(Long bookDefinitionId, String cardNumber);
+
 }

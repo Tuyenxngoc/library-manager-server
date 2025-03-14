@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -86,4 +87,11 @@ public class AuthController {
     ) {
         return VsResponseUtil.success(authService.changePassword(requestDto, userDetails.getCardNumber()));
     }
+
+    @Operation(summary = "API get current user login")
+    @GetMapping(UrlConstant.Auth.GET_CURRENT_USER)
+    public ResponseEntity<?> getCurrentUser(@CurrentUser CustomUserDetails userDetails) {
+        return VsResponseUtil.success(authService.getCurrentUser(userDetails));
+    }
+
 }

@@ -33,6 +33,7 @@ public class ReviewController {
     }
 
     @Operation(summary = "Get reviews by reader ID")
+    @PreAuthorize("hasRole('ROLE_MANAGE_REVIEW')")
     @GetMapping(UrlConstant.Review.GET_BY_READER_ID)
     public ResponseEntity<?> getReviewsByUser(@PathVariable Long readerId) {
         return VsResponseUtil.success(reviewService.getReviewsByReader(readerId));
@@ -46,6 +47,7 @@ public class ReviewController {
     }
 
     @Operation(summary = "Update a review")
+    @PreAuthorize("hasAnyRole('ROLE_MANAGE_REVIEW', 'ROLE_READER')")
     @PutMapping(UrlConstant.Review.UPDATE)
     public ResponseEntity<?> updateReview(
             @PathVariable Long reviewId,
@@ -56,6 +58,7 @@ public class ReviewController {
     }
 
     @Operation(summary = "Delete a review")
+    @PreAuthorize("hasAnyRole('ROLE_MANAGE_REVIEW', 'ROLE_READER')")
     @DeleteMapping(UrlConstant.Review.DELETE)
     public ResponseEntity<?> deleteReview(
             @PathVariable Long reviewId,

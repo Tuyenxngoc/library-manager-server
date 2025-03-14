@@ -32,12 +32,6 @@ public class UserController {
 
     UserService userService;
 
-    @Operation(summary = "API get current user login")
-    @GetMapping(UrlConstant.User.GET_CURRENT_USER)
-    public ResponseEntity<?> getCurrentUser(@CurrentUser CustomUserDetails userDetails) {
-        return VsResponseUtil.success(userService.getCurrentUser(userDetails));
-    }
-
     @Operation(summary = "API Create New User")
     @PreAuthorize("hasRole('ROLE_MANAGE_USER')")
     @PostMapping(UrlConstant.User.CREATE)
