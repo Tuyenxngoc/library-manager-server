@@ -7,6 +7,7 @@ import com.example.librarymanager.constant.SuccessMessage;
 import com.example.librarymanager.domain.dto.common.CommonResponseDto;
 import com.example.librarymanager.domain.dto.common.DataMailDto;
 import com.example.librarymanager.domain.dto.request.auth.*;
+import com.example.librarymanager.domain.dto.response.auth.CurrentUserLoginResponseDto;
 import com.example.librarymanager.domain.dto.response.auth.LoginResponseDto;
 import com.example.librarymanager.domain.dto.response.auth.TokenRefreshResponseDto;
 import com.example.librarymanager.domain.entity.Reader;
@@ -22,6 +23,7 @@ import com.example.librarymanager.security.jwt.JwtTokenProvider;
 import com.example.librarymanager.service.AuthService;
 import com.example.librarymanager.service.EmailRateLimiterService;
 import com.example.librarymanager.service.JwtBlacklistService;
+import com.example.librarymanager.service.LogService;
 import com.example.librarymanager.util.JwtUtil;
 import com.example.librarymanager.util.RandomPasswordUtil;
 import com.example.librarymanager.util.SendMailUtil;
@@ -55,6 +57,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthServiceImpl implements AuthService {
+    private static final String TAG = "Xác thực";
 
     AuthenticationManager authenticationManager;
 
@@ -73,6 +76,8 @@ public class AuthServiceImpl implements AuthService {
     SendMailUtil sendMailUtil;
 
     ReaderRepository readerRepository;
+
+    LogService logService;
 
     @Override
     public LoginResponseDto readerLogin(ReaderLoginRequestDto request) {
@@ -136,6 +141,8 @@ public class AuthServiceImpl implements AuthService {
 
             String accessToken = jwtTokenProvider.generateToken(customUserDetails, false);
             String refreshToken = jwtTokenProvider.generateToken(customUserDetails, true);
+
+            logService.createLog(TAG, "Đăng nhập", request.getUsername() + " đăng nhập vào hệ thống", customUserDetails.getUserId());
 
             return new LoginResponseDto(
                     accessToken,
@@ -336,4 +343,19 @@ public class AuthServiceImpl implements AuthService {
         });
     }
 
+    @Override
+    public CurrentUserLoginResponseDto getCurrentUser(CustomUserDetails userDetails) {
+        if (userDetails.getUserId() != null) {
+            User user = userRepository.findById(userDetails.getUserId())
+                    .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_ID, userDetails.getUserId()));
+
+            return CurrentUserLoginResponseDto.create(user);
+        } else if (userDetails.getCardNumber() != null) {
+            Reader reader = readerRepository.findByCardNumber(userDetails.getCardNumber())
+                    .orElseThrow(() -> new NotFoundException(ErrorMessage.Reader.ERR_NOT_FOUND_CARD_NUMBER, userDetails.getCardNumber()));
+
+            return CurrentUserLoginResponseDto.create(reader);
+        }
+        return null;
+    }
 }

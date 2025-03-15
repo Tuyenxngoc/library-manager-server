@@ -18,6 +18,7 @@ public enum RoleConstant {
     ROLE_MANAGE_SYSTEM_SETTINGS("Quản lý cài đặt hệ thống"),
     ROLE_MANAGE_READER("Quản lý bạn đọc"),
     ROLE_MANAGE_BORROW_RECEIPT("Quản lý phiếu mượn"),
+    ROLE_MANAGE_REVIEW("Quản lý bình luận và đánh giá"),
     ROLE_READER("Độc giả");
 
     private final String roleName;

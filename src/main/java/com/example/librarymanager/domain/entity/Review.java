@@ -21,6 +21,7 @@ public class Review extends DateAuditing {
 
     private int rating;  // 1-5 sao
 
+    @Column(name = "comment", length = 500)
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)

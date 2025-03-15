@@ -15,6 +15,7 @@ public class UrlConstant {
         public static final String CHANGE_PASSWORD = PRE_FIX + "/change-password";
         public static final String ADMIN_CHANGE_PASSWORD = ADMIN_URL + CHANGE_PASSWORD;
         public static final String REFRESH_TOKEN = PRE_FIX + "/refresh-token";
+        public static final String GET_CURRENT_USER = PRE_FIX + "/current";
     }
 
     public static class User {
@@ -26,8 +27,6 @@ public class UrlConstant {
         public static final String UPDATE = PRE_FIX + "/{id}";
         public static final String DELETE = PRE_FIX + "/{id}";
         public static final String UPLOAD_IMAGES = PRE_FIX + "/upload-images";
-
-        public static final String GET_CURRENT_USER = PRE_FIX + "/current";
     }
 
     public static class Role {
@@ -324,5 +323,13 @@ public class UrlConstant {
         public static final String GET_BY_READER_ID = PRE_FIX + "/reader/{readerId}";
         public static final String UPDATE = PRE_FIX + "/{reviewId}";
         public static final String DELETE = PRE_FIX + "/{reviewId}";
+    }
+
+    public static class Notification {
+        private static final String PRE_FIX = "/notifications";
+
+        public static final String GET_BY_USER = PRE_FIX;
+        public static final String MARK_AS_READ = PRE_FIX + "/read/{notificationId}";
+        public static final String DELETE = PRE_FIX + "/{notificationId}";
     }
 }

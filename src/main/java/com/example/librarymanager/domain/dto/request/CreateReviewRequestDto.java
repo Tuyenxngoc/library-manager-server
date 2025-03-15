@@ -1,7 +1,10 @@
 package com.example.librarymanager.domain.dto.request;
 
 import com.example.librarymanager.constant.ErrorMessage;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +21,6 @@ public class CreateReviewRequestDto {
     @Max(value = 5, message = ErrorMessage.INVALID_MAXIMUM_FIVE)
     private Integer rating;
 
-    @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
     @Size(max = 500, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String comment;
 

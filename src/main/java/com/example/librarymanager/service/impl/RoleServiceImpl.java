@@ -48,6 +48,7 @@ public class RoleServiceImpl implements RoleService {
                 new Role(ROLE_MANAGE_SYSTEM_SETTINGS),
                 new Role(ROLE_MANAGE_READER),
                 new Role(ROLE_MANAGE_BORROW_RECEIPT),
+                new Role(ROLE_MANAGE_REVIEW),
                 new Role(ROLE_READER)
         );
 

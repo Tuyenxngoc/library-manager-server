@@ -201,6 +201,10 @@ public class ErrorMessage {
 
     public static class Review {
         public static final String ERR_NOT_FOUND_ID = "exception.review.not.found.id";
+        public static final String ERR_ALREADY_REVIEWED = "exception.review.already_reviewed";
     }
 
+    public static class Notification {
+        public static final String ERR_NOT_FOUND_ID = "exception.notification.not.found.id";
+    }
 }
