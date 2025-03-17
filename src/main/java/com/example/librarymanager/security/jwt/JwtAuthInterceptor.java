@@ -1,43 +1,78 @@
 package com.example.librarymanager.security.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import org.springframework.beans.factory.annotation.Value;
+import com.example.librarymanager.service.CustomUserDetailsService;
+import com.example.librarymanager.service.JwtBlacklistService;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import java.util.Map;
-import java.util.Optional;
 
+@Log4j2
 @Component
+@RequiredArgsConstructor
 public class JwtAuthInterceptor implements HandshakeInterceptor {
 
-    @Value("${jwt.secret:76947ef7-7af1-4745-bfda-ab2d5cb09290}")
-    private String SECRET_KEY;
+    private final JwtTokenProvider tokenProvider;
+
+    private final JwtBlacklistService tokenService;
+
+    private final CustomUserDetailsService customUserDetailsService;
+
+    private void setAuthentication(UserDetails userDetails) {
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+    }
 
     @Override
-    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-        Optional<String> token = Optional.ofNullable(request.getHeaders().getFirst("Authorization"));
+    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) {
+        String jwt = null;
 
-        if (token.isPresent() && token.get().startsWith("Bearer ")) {
-            try {
-                String jwt = token.get().substring(7);
-                Claims claims = Jwts.parser()
-                        .setSigningKey(SECRET_KEY)
-                        .parseClaimsJws(jwt)
-                        .getBody();
+        try {
+            if (request instanceof ServletServerHttpRequest) {
+                HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();
 
-                attributes.put("userId", claims.getSubject());
-                return true;
-            } catch (Exception e) {
-                throw new Exception("Invalid JWT Token");
+                String authHeader = servletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+                if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                    jwt = authHeader.substring(7);
+                }
+
+                if (jwt == null) {
+                    jwt = servletRequest.getParameter("token");
+                }
             }
-        }
 
-        return false;
+            if (jwt == null || !tokenProvider.validateToken(jwt) || !tokenProvider.isAccessToken(jwt) || tokenService.isTokenBlocked(jwt)) {
+                return false;
+            }
+
+            String userId = tokenProvider.extractSubjectFromJwt(jwt);
+            String cardNumber = (userId == null) ? tokenProvider.extractClaimCardNumber(jwt) : null;
+
+            if (userId != null) {
+                UserDetails userDetails = customUserDetailsService.loadUserByUserId(userId);
+                setAuthentication(userDetails);
+            } else if (cardNumber != null) {
+                UserDetails userDetails = customUserDetailsService.loadUserByCardNumber(cardNumber);
+                setAuthentication(userDetails);
+            }
+
+            return true;
+        } catch (Exception e) {
+            log.error("Invalid JWT Token: {}", e.getMessage());
+            return false;
+        }
     }
 
     @Override
